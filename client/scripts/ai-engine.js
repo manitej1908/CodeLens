@@ -33,11 +33,11 @@ function showToast(msg, type = 'info', duration = 3500) {
 // RIPPLE SYSTEM
 // ─────────────────────────────────────────────────────────
 function addRipple(btn) {
-  btn.addEventListener('click', function(e) {
+  btn.addEventListener('click', function (e) {
     const rect = btn.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height) * 2;
     const x = e.clientX - rect.left - size / 2;
-    const y = e.clientY - rect.top  - size / 2;
+    const y = e.clientY - rect.top - size / 2;
     const ripple = document.createElement('span');
     ripple.className = 'ripple';
     ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
@@ -61,7 +61,7 @@ function initRipples() {
 function generateAIResponse(userQuestion, file, analysis, aiMode, conversationHistory) {
   if (!userQuestion.trim()) return '';
 
-  const q   = userQuestion.toLowerCase().trim();
+  const q = userQuestion.toLowerCase().trim();
   const code = file?.content || '';
   const lang = file?.lang || 'Unknown';
   const fname = file?.name || 'your code';
@@ -125,24 +125,21 @@ function buildComplexityAnswer(q, a, mode) {
     t === 'O(n²)' ? `
     Quadratic time because of ${a.loops.length} nested loop${a.loops.length > 1 ? 's' : ''}.
     For every element (outer loop), we iterate through all elements again (inner loop) — n × n = n² operations.` :
-    t === 'O(n)' ? `
+      t === 'O(n)' ? `
     Linear time because we traverse the data exactly once. Each element is processed in constant time inside the loop.` :
-    `Constant time — no loops or recursion. The program executes the same number of operations regardless of input size.`;
+        `Constant time — no loops or recursion. The program executes the same number of operations regardless of input size.`;
 
   const modeAddition = {
-    mentor: `<div class="ai-mentor-prompt">💭 <strong>Think about this:</strong> If n=1000, ${t} means roughly ${
-      t === 'O(n²)' ? '1,000,000' : t === 'O(n)' ? '1,000' : '1'
-    } operations. How does this scale to n=1,000,000? Would your solution still be practical?</div>`,
-    beginner: `<div class="ai-mentor-prompt">🌱 <strong>Simple explanation:</strong> Think of n as the size of your list. ${
-      t === 'O(n²)' ? 'O(n²) means if you double your list, the work becomes 4× harder. Like comparing every student with every other student in a class.' :
-      t === 'O(n)' ? 'O(n) is great! Work grows proportionally — double the list, double the work. Like reading a book cover to cover.' :
-      'O(1) is perfect! Work stays constant no matter how big your input is.'
-    }</div>`,
-    interview: `<div class="ai-mentor-prompt">🎯 <strong>Interview angle:</strong> State it precisely: "${t} time, ${s} space." Then explain your reasoning. Expect follow-up: "Can you do better?" ${
-      t === 'O(n²)' ? 'Hint: often O(n log n) is achievable with sorting/divide-and-conquer.' :
-      t === 'O(2ⁿ)' ? 'Hint: memoization or dynamic programming can reduce to O(n²) or O(n).' :
-      'You\'re already at near-optimal. Explain why O(n) is a theoretical lower bound here.'
-    }</div>`,
+    mentor: `<div class="ai-mentor-prompt">💭 <strong>Think about this:</strong> If n=1000, ${t} means roughly ${t === 'O(n²)' ? '1,000,000' : t === 'O(n)' ? '1,000' : '1'
+      } operations. How does this scale to n=1,000,000? Would your solution still be practical?</div>`,
+    beginner: `<div class="ai-mentor-prompt">🌱 <strong>Simple explanation:</strong> Think of n as the size of your list. ${t === 'O(n²)' ? 'O(n²) means if you double your list, the work becomes 4× harder. Like comparing every student with every other student in a class.' :
+        t === 'O(n)' ? 'O(n) is great! Work grows proportionally — double the list, double the work. Like reading a book cover to cover.' :
+          'O(1) is perfect! Work stays constant no matter how big your input is.'
+      }</div>`,
+    interview: `<div class="ai-mentor-prompt">🎯 <strong>Interview angle:</strong> State it precisely: "${t} time, ${s} space." Then explain your reasoning. Expect follow-up: "Can you do better?" ${t === 'O(n²)' ? 'Hint: often O(n log n) is achievable with sorting/divide-and-conquer.' :
+        t === 'O(2ⁿ)' ? 'Hint: memoization or dynamic programming can reduce to O(n²) or O(n).' :
+          'You\'re already at near-optimal. Explain why O(n) is a theoretical lower bound here.'
+      }</div>`,
   }[mode] || '';
 
   return `
@@ -228,7 +225,7 @@ function buildLoopAnswer(q, a, code, mode) {
           <div style="display:flex;flex-direction:column;gap:6px">
             ${loops.map((l, i) => `
               <div style="display:flex;align-items:center;gap:10px;padding:7px 12px;background:var(--bg-overlay);border-radius:6px;border:1px solid var(--border-subtle)">
-                <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent-amber);font-weight:700">${i === 0 ? 'OUTER' : i === 1 ? 'INNER' : 'LOOP ' + (i+1)}</span>
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent-amber);font-weight:700">${i === 0 ? 'OUTER' : i === 1 ? 'INNER' : 'LOOP ' + (i + 1)}</span>
                 <span style="font-family:var(--font-mono);font-size:12px;color:var(--accent-cyan);font-weight:700">${l.type}</span>
                 <span style="font-size:11px;color:var(--text-muted)">line ${l.line}</span>
                 ${i > 0 ? `<span class="chip" style="font-size:10px;color:var(--accent-rose);border-color:rgba(244,63,94,0.3);background:rgba(244,63,94,0.08);margin-left:auto">Nested O(n²)</span>` : ''}
@@ -236,7 +233,7 @@ function buildLoopAnswer(q, a, code, mode) {
           </div>
           <div style="margin-top:12px;font-size:13px;color:var(--text-secondary);line-height:1.7">
             ${loops.length >= 2 ? '<strong style="color:var(--accent-amber)">Nested loops</strong> found — this is the most common source of O(n²) complexity. Consider if the inner loop can be replaced with a hash map lookup (O(1)) to achieve O(n) overall.' :
-            'Single loop — contributes <strong style="color:var(--accent-emerald)">O(n)</strong> time complexity. Clean and efficient.'}
+        'Single loop — contributes <strong style="color:var(--accent-emerald)">O(n)</strong> time complexity. Clean and efficient.'}
           </div>
         ` : '<p style="font-size:13px;color:var(--text-secondary)">No loops detected. This code runs in O(1) constant time.</p>'}
       </div>
@@ -495,8 +492,8 @@ function buildGeneralAnswer(q, a, code, lang, fname, mode, history) {
   const codeInsight = a.functions.length > 0
     ? `this code defines <strong style="color:var(--accent-primary)">${a.functions.map(f => `<code style="background:var(--bg-overlay);padding:1px 5px;border-radius:3px;font-family:var(--font-mono);font-size:11px">${f.name}()</code>`).join(', ')}</strong>`
     : a.loops.length > 0
-    ? `this code uses <strong style="color:var(--accent-primary)">${a.loops.length} loop${a.loops.length > 1 ? 's' : ''}</strong> to process data`
-    : `this is a <strong style="color:var(--accent-primary)">${lang}</strong> program with ${a.lineCount} lines`;
+      ? `this code uses <strong style="color:var(--accent-primary)">${a.loops.length} loop${a.loops.length > 1 ? 's' : ''}</strong> to process data`
+      : `this is a <strong style="color:var(--accent-primary)">${lang}</strong> program with ${a.lineCount} lines`;
 
   const followUpMap = {
     mentor: [
@@ -554,7 +551,7 @@ function wrapWithModeHeader(answer, mode, turnCount) {
 
 // ── Helpers ─────────────────────────────────────────────
 function escHtmlAI(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function inferTypeFromValue(val) {
@@ -585,15 +582,15 @@ function inferTypeFromValue(val) {
  * @returns {Promise<string>} HTML string for mentor bubble
  */
 async function sendMentorMessage(question, file, analysis, aiMode, history) {
-  const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
+  const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:3000' : 'https://codelens-vb6o.onrender.com';
 
   try {
     const res = await fetch(`${API_BASE}/api/mentor`, {
-      method:  'POST',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({
-        code:                file?.content || '',
-        language:            file?.monacoLang || 'unknown',
+      body: JSON.stringify({
+        code: file?.content || '',
+        language: file?.monacoLang || 'unknown',
         question,
         conversationHistory: history,
         aiMode,
