@@ -1,0 +1,17 @@
+{
+  "sessionId": "0cbc56ae-b099-40f4-81c1-3a92ef439a5f",
+  "savedAt": "2026-07-12T15:08:30.553Z",
+  "fileCount": 1,
+  "files": [
+    {
+      "id": "f_1783867811956",
+      "name": "main.cpp",
+      "lang": "C++",
+      "ext": ".cpp",
+      "icon": "⚡",
+      "monacoLang": "cpp",
+      "content": "#include <iostream>\nusing namespace std;\n\nvoid increment(int *x) {\n    *x = *x + 5;\n}\n\nint main() {\n    int a = 10;\n    increment(&a);\n    cout << a << endl;\n    return 0;\n}",
+      "modified": false
+    }
+  ]
+}

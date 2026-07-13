@@ -1,0 +1,17 @@
+{
+  "sessionId": "test-session-abc",
+  "savedAt": "2026-07-09T15:02:09.955Z",
+  "fileCount": 1,
+  "files": [
+    {
+      "id": "f_1",
+      "name": "main.py",
+      "lang": "Python",
+      "ext": ".py",
+      "icon": "snake",
+      "monacoLang": "python",
+      "content": "print(42)",
+      "modified": false
+    }
+  ]
+}

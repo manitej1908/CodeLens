@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeLens — Workspace</title>
+  <meta name="description" content="CodeLens AI workspace. Write code with Monaco Editor, get AI explanations, visualize execution." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c6ee8'/><text y='22' x='4' font-size='20'>🔭</text></svg>" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/workspace.css" />
+</head>
+<body style="overflow:hidden">
+
+<!-- ══════════════════════════════════
+     NEW FILE DIALOG
+════════════════════════════════════ -->
+<div class="cmd-overlay" id="new-file-overlay" role="dialog" aria-modal="true" aria-label="Create new file">
+  <div class="cmd-palette" style="width:440px">
+    <div class="cmd-input-wrap">
+      <span style="font-size:16px;color:var(--text-muted)">📄</span>
+      <input class="cmd-input" id="new-file-input" placeholder="main.py" autocomplete="off" spellcheck="false" />
+    </div>
+    <div style="padding:12px 20px;border-top:1px solid var(--border-subtle)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Select Language</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="new-file-lang-btns">
+        <button class="lang-picker-btn active-lang" data-ext=".py"   data-lang="Python">🐍 Python</button>
+        <button class="lang-picker-btn" data-ext=".js"   data-lang="JavaScript">🟨 JavaScript</button>
+        <button class="lang-picker-btn" data-ext=".ts"   data-lang="TypeScript">🔷 TypeScript</button>
+        <button class="lang-picker-btn" data-ext=".cpp"  data-lang="C++">⚡ C++</button>
+        <button class="lang-picker-btn" data-ext=".c"    data-lang="C">©️ C</button>
+        <button class="lang-picker-btn" data-ext=".java" data-lang="Java">☕ Java</button>
+        <button class="lang-picker-btn" data-ext=".go"   data-lang="Go">🐹 Go</button>
+        <button class="lang-picker-btn" data-ext=".rs"   data-lang="Rust">🦀 Rust</button>
+        <button class="lang-picker-btn" data-ext=".md"   data-lang="Markdown">📝 Markdown</button>
+      </div>
+    </div>
+    <div class="cmd-footer">
+      <button class="btn btn-primary btn-sm" id="new-file-confirm">Create File</button>
+      <button class="btn btn-ghost btn-sm" id="new-file-cancel">Cancel</button>
+      <span class="cmd-hint" style="margin-left:auto"><span class="kbd">Enter</span> to create</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     RENAME DIALOG
+════════════════════════════════════ -->
+<div class="cmd-overlay" id="rename-overlay" role="dialog" aria-modal="true" aria-label="Rename file">
+  <div class="cmd-palette" style="width:380px">
+    <div class="cmd-input-wrap">
+      <span style="font-size:16px;color:var(--text-muted)">✏️</span>
+      <input class="cmd-input" id="rename-input" placeholder="new-name.py" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="cmd-footer">
+      <button class="btn btn-primary btn-sm" id="rename-confirm">Rename</button>
+      <button class="btn btn-ghost btn-sm" id="rename-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     COMMAND PALETTE
+════════════════════════════════════ -->
+<div class="cmd-overlay" id="cmd-overlay" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="cmd-palette">
+    <div class="cmd-input-wrap">
+      <span style="font-size:16px;color:var(--text-muted)">⌘</span>
+      <input class="cmd-input" id="cmd-input" placeholder="Type a command or search…" autocomplete="off" spellcheck="false" />
+      <span class="kbd">Esc</span>
+    </div>
+    <div class="cmd-results" id="cmd-results" role="listbox"></div>
+    <div class="cmd-footer">
+      <span class="cmd-hint"><span class="kbd">↑↓</span> navigate</span>
+      <span class="cmd-hint"><span class="kbd">↵</span> select</span>
+      <span class="cmd-hint"><span class="kbd">Esc</span> close</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     WORKSPACE SHELL
+════════════════════════════════════ -->
+<div class="workspace-shell" id="workspace-shell">
+
+  <!-- ── Top Bar ─────────────────────── -->
+  <header class="topbar" id="topbar" role="banner">
+    <div class="topbar-left">
+      <a href="index.html" class="topbar-logo" id="topbar-logo" aria-label="CodeLens home">
+        <div class="topbar-logo-icon">🔭</div>
+        <span>CodeLens</span>
+      </a>
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">workspace</span>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-item active" id="breadcrumb-file">untitled</span>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <div class="tab-bar" role="tablist" id="tab-bar"></div>
+      <button class="tab-new-btn" id="new-tab-btn" title="New file (Ctrl+N)" aria-label="New file">＋</button>
+    </div>
+
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" id="cmd-palette-btn" title="Command palette (Ctrl+K)" aria-label="Command palette">⌘ <span style="font-size:11px;color:var(--text-muted)">K</span></button>
+      <button class="btn btn-ghost btn-sm" id="terminal-toggle-btn" title="Toggle terminal (Ctrl+`)" aria-label="Toggle terminal">⊟ Terminal</button>
+      <button class="btn btn-primary btn-sm" id="run-code-btn" aria-label="Run code" title="Run Code (Ctrl+Enter)">▶ Run</button>
+      <button class="btn btn-secondary btn-sm" id="run-analysis-btn" aria-label="Analyze with AI">🧠 Analyze</button>
+      <button class="btn btn-secondary btn-sm" id="visualize-btn" aria-label="Visualize execution">📊 Visualize</button>
+      <div style="width:1px;height:20px;background:var(--border-subtle)"></div>
+      <div class="avatar" style="width:28px;height:28px;font-size:12px;background:linear-gradient(135deg,#7c6ee8,#3b82f6)">U</div>
+    </div>
+  </header>
+
+  <!-- ── Icon Rail ───────────────────── -->
+  <nav class="icon-rail" id="icon-rail" role="navigation" aria-label="Tool rail">
+    <button class="rail-btn active" data-panel="files" id="rail-files" data-tooltip="Files">📁</button>
+    <button class="rail-btn" data-panel="search" id="rail-search" data-tooltip="Search">🔍</button>
+    <div class="rail-divider"></div>
+    <button class="rail-btn" data-panel="viz" id="rail-viz" data-tooltip="Visualize">📊</button>
+    <button class="rail-btn" data-panel="mentor" id="rail-mentor" data-tooltip="AI Mentor">🧠</button>
+    <div class="rail-spacer"></div>
+    <a href="index.html" class="rail-btn" data-tooltip="Home" style="text-decoration:none">🏠</a>
+  </nav>
+
+  <!-- ── File Sidebar ─────────────────── -->
+  <aside class="file-sidebar" id="file-sidebar" role="complementary" aria-label="File explorer">
+    <div class="sidebar-header">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span class="sidebar-title">Explorer</span>
+        <div style="display:flex;gap:2px">
+          <button class="file-action-btn" id="sidebar-new-btn" title="New File" aria-label="New file" style="width:24px;height:24px;font-size:14px;color:var(--accent-primary)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="file-tree" id="file-tree" role="tree">
+      <div class="file-group">
+        <div class="file-group-label"><span>▾</span><span>Workspace</span></div>
+        <div id="file-list" role="group"></div>
+        <button class="file-new-inline-btn" id="file-new-inline">＋ New File</button>
+      </div>
+    </div>
+
+    <div id="empty-sidebar-msg" style="padding:16px;text-align:center;display:none">
+      <div style="font-size:24px;margin-bottom:6px">📂</div>
+      <div style="font-size:12px;color:var(--text-muted);line-height:1.6">No files yet.<br/>Click + to create one.</div>
+    </div>
+
+    <!-- AI Mode -->
+    <div style="padding:12px;border-top:1px solid var(--border-subtle)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">AI Mode</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <button class="ai-mode-btn active-mode" data-mode="mentor" id="mode-mentor">🧑‍🏫 Mentor Mode</button>
+        <button class="ai-mode-btn" data-mode="beginner" id="mode-beginner">🌱 Beginner Mode</button>
+        <button class="ai-mode-btn" data-mode="interview" id="mode-interview">🎯 Interview Mode</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Editor Area (editor + terminal split) ── -->
+  <div class="editor-area" id="editor-area">
+
+    <!-- Empty state -->
+    <div id="editor-empty-state" class="editor-empty-state">
+      <div style="font-size:56px">🔭</div>
+      <h2 style="font-size:22px;font-weight:700;letter-spacing:-0.02em;margin:12px 0 8px">Start with a new file</h2>
+      <p style="font-size:14px;color:var(--text-muted);max-width:340px;line-height:1.7;text-align:center">Create a file, write or paste your code, and let CodeLens transform it into an interactive learning experience.</p>
+      <button class="btn btn-primary btn-lg" id="empty-new-file-btn" style="margin-top:24px">✦ Create New File</button>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:10px">or press <span class="kbd">Ctrl+N</span></div>
+    </div>
+
+    <!-- Editor pane -->
+    <div id="editor-pane" style="display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden">
+
+      <div class="editor-toolbar">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="editor-lang-badge">
+            <span id="editor-lang-icon">📄</span>
+            <span id="editor-lang-label">No file</span>
+          </div>
+          <span class="chip" id="editor-save-status" style="font-size:10px;color:var(--accent-emerald);border-color:rgba(16,185,129,0.2);background:rgba(16,185,129,0.06)">● Saved</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:12px;color:var(--text-muted)" id="editor-position">Ln 1, Col 1</span>
+          <div style="width:1px;height:14px;background:var(--border-subtle)"></div>
+          <button class="btn btn-ghost btn-sm" id="save-btn" title="Save (Ctrl+S)">💾 Save</button>
+          <button class="btn btn-ghost btn-sm" id="editor-clear-btn" title="Clear">⬜ Clear</button>
+        </div>
+      </div>
+
+      <!-- Monaco container -->
+      <div id="monaco-container" style="flex:1;min-height:0;overflow:hidden;"></div>
+
+      <!-- Timeline bar -->
+      <div class="timeline-bar" id="timeline-bar">
+        <div class="timeline-controls">
+          <button class="btn btn-ghost btn-sm" id="tl-prev" aria-label="Previous step">◀</button>
+          <button class="btn btn-primary btn-sm" id="tl-play" aria-label="Play">▶ Run</button>
+          <button class="btn btn-ghost btn-sm" id="tl-next" aria-label="Next step">▶|</button>
+          <div class="timeline-track" id="timeline-track">
+            <div class="timeline-progress" id="timeline-progress" style="width:0%">
+              <div class="timeline-thumb"></div>
+            </div>
+          </div>
+          <span class="timeline-step-label" id="tl-step-label">No steps</span>
+        </div>
+        <div class="timeline-steps" id="timeline-steps"></div>
+      </div>
+    </div>
+
+    <!-- Drag divider -->
+    <div class="terminal-divider" id="terminal-divider" style="display:none" role="separator" aria-label="Resize terminal">
+      <div class="terminal-divider-handle"></div>
+    </div>
+
+    <!-- Collapsible Program Input Panel -->
+    <div class="program-input-panel" id="program-input-panel" style="display:none; border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface); flex-shrink: 0;">
+      <div class="terminal-header" style="cursor:pointer; user-select:none; border-bottom:1px solid var(--border-subtle); min-height:32px;" id="program-input-toggle-header">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase" id="program-input-toggle-label">▼ Program Input (stdin)</span>
+          <span class="chip" style="font-size:10px;color:var(--accent-primary);border-color:rgba(124,110,232,0.2);background:rgba(124,110,232,0.06)">Optional</span>
+        </div>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-ghost btn-sm" id="program-input-clear-btn" title="Clear input">⬜ Clear</button>
+        </div>
+      </div>
+      <div id="program-input-body" style="padding: 8px 12px; display:block;">
+        <textarea id="program-input-textarea" spellcheck="false" placeholder="Input for cin(), scanf(), getline(), input()" style="width:100%; height:72px; background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-subtle); border-radius:6px; padding:8px; font-family:var(--font-mono); font-size:12px; resize:vertical; outline:none; display:block;"></textarea>
+      </div>
+    </div>
+
+    <!-- Terminal pane -->
+    <div class="terminal-pane" id="terminal-pane" style="display:none">
+      <div class="terminal-header">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase">Terminal</span>
+          <span class="chip" style="font-size:10px;color:var(--accent-emerald);border-color:rgba(16,185,129,0.2);background:rgba(16,185,129,0.06)" id="terminal-status">● Ready</span>
+        </div>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-ghost btn-sm" id="terminal-clear-btn" title="Clear terminal">⬜ Clear</button>
+          <button class="btn btn-ghost btn-sm" id="terminal-close-btn" title="Close terminal">✕</button>
+        </div>
+      </div>
+      <div class="terminal-body" id="terminal-body" role="log" aria-live="polite" aria-label="Terminal output"></div>
+      <div class="terminal-input-row">
+        <span class="terminal-prompt" id="terminal-prompt">$ </span>
+        <input class="terminal-input" id="terminal-input" spellcheck="false" autocomplete="off" aria-label="Terminal input" placeholder="Type a command…" />
+      </div>
+    </div>
+
+  </div><!-- /editor-area -->
+
+  <!-- ── AI Panel ──────────────────────── -->
+  <aside class="ai-panel" id="ai-panel" role="complementary" aria-label="AI panel">
+    <div class="ai-panel-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:8px;background:var(--gradient-accent);display:grid;place-items:center;font-size:14px;box-shadow:var(--shadow-glow-sm)">🔭</div>
+        <div>
+          <div style="font-size:13px;font-weight:700">AI Assistant</div>
+          <div style="font-size:11px;display:flex;align-items:center;gap:4px" id="ai-status-dot">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--accent-emerald);display:inline-block"></span>
+            <span id="ai-mode-label" style="color:var(--accent-emerald)">Mentor Mode</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm btn-icon" id="ai-clear-btn" aria-label="Clear chat">✕</button>
+    </div>
+
+    <div class="ai-panel-tabs" role="tablist">
+      <button class="ai-tab active" data-ai-tab="explain" role="tab" aria-selected="true">Explain</button>
+      <button class="ai-tab" data-ai-tab="vars"    role="tab" aria-selected="false">Variables</button>
+      <button class="ai-tab" data-ai-tab="viz"     role="tab" aria-selected="false">Visualize</button>
+      <button class="ai-tab" data-ai-tab="mentor"  role="tab" aria-selected="false">Mentor</button>
+    </div>
+
+    <div class="ai-content" id="ai-content" role="tabpanel">
+      <div class="ai-welcome" id="ai-welcome">
+        <div style="font-size:36px;margin-bottom:12px">🧠</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:8px">AI ready</div>
+        <div style="font-size:13px;color:var(--text-muted);line-height:1.7;max-width:240px;margin:0 auto">Create a file, write your code, then click <strong style="color:var(--accent-primary)">Analyze</strong>.</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:16px">
+          <button class="btn btn-secondary btn-sm" id="quick-explain-btn">📋 Explain program</button>
+          <button class="btn btn-secondary btn-sm" id="quick-complexity-btn">⚡ Analyze complexity</button>
+          <button class="btn btn-secondary btn-sm" id="quick-suggest-btn">💡 Suggest improvements</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mentor-input-bar" id="mentor-input-bar">
+      <div class="mentor-input-wrap">
+        <input class="mentor-input" id="mentor-input" placeholder="Ask about your code…" autocomplete="off" aria-label="Message AI mentor" />
+        <button class="mentor-send-btn" id="mentor-send-btn" aria-label="Send">→</button>
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /workspace-shell -->
+
+<!-- STATUS BAR -->
+<div class="status-bar" id="status-bar" role="status">
+  <div class="status-item" id="status-lang-item"><span>🔭</span><strong>CodeLens</strong></div>
+  <div class="status-sep">|</div>
+  <div class="status-item" id="status-lang"><span>📄</span><strong>No file</strong></div>
+  <div class="status-sep">|</div>
+  <div class="status-item" id="status-lines">0 lines</div>
+  <div style="flex:1"></div>
+  <div class="status-item" id="status-ai">🧠 AI <strong>Ready</strong></div>
+  <div class="status-sep">|</div>
+  <div class="status-item">Ln <strong id="status-ln">1</strong>, Col <strong id="status-col">1</strong></div>
+</div>
+
+<!-- Monaco Editor from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+<!-- New Engine Scripts (must load before workspace.js) -->
+<script src="scripts/ai-engine.js"></script>
+<script src="scripts/visualizer.js"></script>
+<script src="scripts/workspace.js"></script>
+</body>
+</html>
+

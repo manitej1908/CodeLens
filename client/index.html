@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeLens — See Your Code Think</title>
+  <meta name="description" content="CodeLens is an AI-powered visual programming mentor. Paste your code and watch AI transform it into interactive explanations, live execution, memory visualization, and algorithm animations." />
+  <meta property="og:title" content="CodeLens — See Your Code Think" />
+  <meta property="og:description" content="Transform source code into an interactive learning experience. Visualize execution, memory, and algorithms — powered by AI." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c6ee8'/><text y='22' x='4' font-size='20'>🔭</text></svg>" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/landing.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     NAVIGATION
+════════════════════════════════════ -->
+<nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+  <a href="#" class="nav-logo" id="nav-logo">
+    <div class="nav-logo-icon">🔭</div>
+    <span>CodeLens</span>
+  </a>
+  <ul class="nav-links" role="list">
+    <li><a href="#features"  class="nav-link" id="nav-features">Features</a></li>
+    <li><a href="#how"       class="nav-link" id="nav-how">How It Works</a></li>
+    <li><a href="#showcase"  class="nav-link" id="nav-showcase">Showcase</a></li>
+    <li><a href="#upcoming"  class="nav-link" id="nav-upcoming">Upcoming</a></li>
+    <li><a href="#faq"       class="nav-link" id="nav-faq">FAQ</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn btn-ghost btn-sm" id="nav-signin">Sign in</button>
+    <a href="workspace.html" class="btn btn-primary btn-sm" id="nav-cta">Try Free →</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════
+     HERO
+════════════════════════════════════ -->
+<section class="hero" id="hero" aria-labelledby="hero-headline">
+  <canvas id="hero-particles" style="position:absolute;inset:0;z-index:0;pointer-events:none"></canvas>
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-orb-1"></div>
+  <div class="hero-orb-2"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow animate-fade-up" id="hero-eyebrow">
+      <span class="hero-eyebrow-dot"></span>
+      AI-Powered Visual Learning
+    </div>
+
+    <h1 class="hero-headline animate-fade-up delay-100" id="hero-headline">
+      <span class="gradient-text">See Your</span><br />
+      Code Think.
+    </h1>
+
+    <p class="hero-sub animate-fade-up delay-200">
+      Paste your code and watch AI transform it into interactive explanations,
+      live execution, memory visualization, and algorithm animations.
+    </p>
+
+    <div class="hero-cta animate-fade-up delay-300">
+      <a href="workspace.html" class="btn btn-primary btn-lg" id="hero-cta-primary">
+        ✦ Start Visualizing — Free
+      </a>
+      <button class="btn btn-secondary btn-lg" id="hero-watch-demo" onclick="document.getElementById('demo-window').scrollIntoView({behavior:'smooth'})">
+        ▶ Watch Demo
+      </button>
+    </div>
+
+    <div class="hero-trust animate-fade-up delay-400">
+      <div class="hero-trust-item">
+        <span>⭐</span>
+        <span>4.9/5 from 2k+ students</span>
+      </div>
+      <span style="color:var(--border-default)">|</span>
+      <div class="hero-trust-item">
+        <span>🔒</span>
+        <span>Free to start</span>
+      </div>
+      <span style="color:var(--border-default)">|</span>
+      <div class="hero-trust-item">
+        <span>⚡</span>
+        <span>No setup required</span>
+      </div>
+    </div>
+
+    <!-- Live variable execution ticker -->
+    <div class="hero-live-ticker" id="hero-live-ticker" aria-live="polite" aria-label="Live code execution preview">
+      <div class="hero-live-dot"></div>
+      <span style="color:var(--text-muted)">Executing:</span>
+      <span class="hero-var-chip" id="hvc-i">i = <span id="hvc-i-val">0</span></span>
+      <span class="hero-var-chip" id="hvc-j">j = <span id="hvc-j-val">0</span></span>
+      <span class="hero-var-chip" id="hvc-arr">arr[j] = <span id="hvc-arr-val">64</span></span>
+      <span style="color:var(--text-muted)">→</span>
+      <span style="color:var(--accent-emerald);font-family:var(--font-mono);font-size:11px" id="hvc-action">comparing…</span>
+    </div>
+  </div>
+
+  <!-- Interactive Demo Window -->
+  <div class="hero-demo animate-scale-in delay-500" id="demo-window">
+    <!-- Floating Glass Cards -->
+    <div class="hero-float-card float-left">
+      <div class="float-icon" style="background:rgba(16,185,129,0.15);color:var(--accent-emerald)">⚡</div>
+      <div class="float-content">
+        <div class="float-label">Complexity</div>
+        <div class="float-val">O(n log n) <span class="badge badge-emerald" style="font-size:9px;padding:1px 5px">Optimal</span></div>
+      </div>
+    </div>
+    <div class="hero-float-card float-right">
+      <div class="float-icon" style="background:rgba(124,110,232,0.15);color:var(--accent-primary)">🧠</div>
+      <div class="float-content">
+        <div class="float-label">AI Mentor Mode</div>
+        <div class="float-val">Guided Hints <span class="badge badge-accent" style="font-size:9px;padding:1px 5px">Active</span></div>
+      </div>
+    </div>
+
+    <div class="demo-window">
+      <div class="demo-titlebar">
+        <div class="demo-dots">
+          <div class="demo-dot demo-dot-red"></div>
+          <div class="demo-dot demo-dot-amber"></div>
+          <div class="demo-dot demo-dot-green"></div>
+        </div>
+        <div class="demo-titlebar-title">codelens — bubble_sort.py — AI Visualization Mode</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="badge badge-emerald" style="font-size:10px">● Live</span>
+        </div>
+      </div>
+      <div class="demo-body">
+        <!-- Code side -->
+        <div class="demo-editor">
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <span class="badge badge-emerald" style="font-size:10px">Python 3</span>
+            <span class="badge badge-cyan" style="font-size:10px">Line 6 executing</span>
+            <span class="badge badge-accent" style="font-size:10px">AI Explanation Active</span>
+          </div>
+          <div id="demo-code-container">
+            <div class="demo-code-line"><span class="code-keyword">def</span> <span class="code-function">bubble_sort</span>(<span class="code-param">arr</span>):</div>
+            <div class="demo-code-line">    n = <span class="code-function">len</span>(arr)</div>
+            <div class="demo-code-line">    <span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-function">range</span>(n):</div>
+            <div class="demo-code-line" id="demo-highlight-line" style="background:rgba(124,110,232,0.12);border-left:2px solid var(--accent-primary);padding-left:6px">        <span class="code-keyword">for</span> j <span class="code-keyword">in</span> <span class="code-function">range</span>(<span class="code-number">0</span>, n-i-<span class="code-number">1</span>):</div>
+            <div class="demo-code-line">            <span class="code-keyword">if</span> arr[j] > arr[j+<span class="code-number">1</span>]:</div>
+            <div class="demo-code-line">                arr[j], arr[j+<span class="code-number">1</span>] = arr[j+<span class="code-number">1</span>], arr[j]</div>
+            <div class="demo-code-line">    <span class="code-keyword">return</span> arr</div>
+          </div>
+
+          <!-- Inline AI hint -->
+          <div style="margin-top:16px;background:rgba(124,110,232,0.08);border:1px solid rgba(124,110,232,0.2);border-radius:10px;padding:12px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent-primary);margin-bottom:6px">🤖 AI Mentor</div>
+            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+              The inner loop compares <code style="background:var(--bg-overlay);padding:1px 5px;border-radius:3px;font-family:var(--font-mono);color:var(--accent-cyan)">arr[j]</code> and 
+              <code style="background:var(--bg-overlay);padding:1px 5px;border-radius:3px;font-family:var(--font-mono);color:var(--accent-cyan)">arr[j+1]</code>. 
+              What do you think happens when we swap them? <strong style="color:var(--accent-glow)">Think before scrolling! 💡</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-divider"></div>
+
+        <!-- Visualization side -->
+        <div class="demo-viz">
+          <div class="demo-viz-title">📊 Array State</div>
+          <div class="array-viz" id="demo-array-viz" style="flex-wrap:wrap;gap:6px">
+            <!-- Rendered by JS -->
+          </div>
+
+          <div style="margin-top:12px">
+            <div class="demo-viz-title" style="margin-bottom:8px">📈 Sorting Progress</div>
+            <div class="demo-bar-chart" id="demo-bar-chart">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <div style="margin-top:12px;background:var(--bg-overlay);border-radius:8px;padding:10px;border:1px solid var(--border-subtle)">
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">Complexity</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <div style="font-size:12px;color:var(--text-secondary)">Time: <strong style="color:var(--accent-amber);font-family:var(--font-mono)">O(n²)</strong></div>
+              <div style="font-size:12px;color:var(--text-secondary)">Space: <strong style="color:var(--accent-emerald);font-family:var(--font-mono)">O(1)</strong></div>
+              <div style="font-size:12px;color:var(--text-secondary)">Pass: <strong style="color:var(--accent-glow);font-family:var(--font-mono)" id="demo-pass-count">2 / 7</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     USED BY / LOGOS STRIP
+════════════════════════════════════ -->
+<div class="logos-strip" aria-hidden="true">
+  <div class="container">
+    <div class="logos-label">Trusted by developers at</div>
+  </div>
+  <div class="logos-track" id="logos-track">
+    <div class="logo-item">🎓 MIT</div>
+    <div class="logo-item">🏫 Stanford</div>
+    <div class="logo-item">🏢 Google</div>
+    <div class="logo-item">💼 Meta</div>
+    <div class="logo-item">🚀 Vercel</div>
+    <div class="logo-item">⚡ Stripe</div>
+    <div class="logo-item">🐙 GitHub</div>
+    <div class="logo-item">🌊 Linear</div>
+    <div class="logo-item">🎨 Figma</div>
+    <div class="logo-item">🔷 Microsoft</div>
+    <!-- duplicate for infinite loop -->
+    <div class="logo-item">🎓 MIT</div>
+    <div class="logo-item">🏫 Stanford</div>
+    <div class="logo-item">🏢 Google</div>
+    <div class="logo-item">💼 Meta</div>
+    <div class="logo-item">🚀 Vercel</div>
+    <div class="logo-item">⚡ Stripe</div>
+    <div class="logo-item">🐙 GitHub</div>
+    <div class="logo-item">🌊 Linear</div>
+    <div class="logo-item">🎨 Figma</div>
+    <div class="logo-item">🔷 Microsoft</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     FEATURES
+════════════════════════════════════ -->
+<section class="section" id="features" aria-labelledby="features-title">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">⚡ Core Features</div>
+      <h2 class="section-title" id="features-title">
+        Everything you need to <br/>
+        <span class="gradient-text">truly understand code</span>
+      </h2>
+      <p class="section-subtitle">
+        Not just syntax highlighting. Not just AI explanations. 
+        A complete visual programming environment designed for deep learning.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Flagship: Visualization -->
+      <div class="feature-card large reveal" id="feature-viz">
+        <div class="feature-card-content">
+          <div class="feature-icon feature-icon-viz">🎬</div>
+          <div class="badge badge-accent" style="margin-bottom:12px;font-size:10px">Flagship Feature</div>
+          <h3 class="feature-card-title">Code Visualization</h3>
+          <p class="feature-card-desc">
+            Watch your code come to life. Variables, arrays, trees, graphs, stacks, queues, 
+            linked lists, recursion — all animated in real time as your code executes.
+            Feel like you're watching the machine think.
+          </p>
+          <div class="feature-tags">
+            <span class="chip">Arrays</span>
+            <span class="chip">Trees</span>
+            <span class="chip">Graphs</span>
+            <span class="chip">Recursion</span>
+            <span class="chip">Call Stack</span>
+            <span class="chip">Heap Memory</span>
+            <span class="chip">Pointers</span>
+          </div>
+        </div>
+        <div class="feature-demo" id="feature-viz-demo">
+          <!-- Mini visualization demo -->
+          <div style="background:var(--bg-overlay);border-radius:12px;border:1px solid var(--border-subtle);padding:16px">
+            <div style="font-size:11px;color:var(--text-muted);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px">Live Array Trace</div>
+            <div class="array-viz" id="feature-array-demo" style="margin-bottom:16px;justify-content:center;gap:8px">
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">Call Stack</div>
+            <div class="stack-viz" id="feature-stack-demo">
+              <div class="stack-frame">
+                <span class="stack-frame-name">bubble_sort</span>
+                <span class="stack-frame-line">line 6</span>
+              </div>
+              <div class="stack-frame active">
+                <span class="stack-frame-name">swap</span>
+                <span class="stack-frame-line">line 3</span>
+              </div>
+            </div>
+            <div style="margin-top:12px;font-size:11px;color:var(--text-muted);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">Variables</div>
+            <div style="display:flex;flex-direction:column;gap:4px" id="feature-vars">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg-elevated);border-radius:6px;border:1px solid var(--border-subtle);font-size:12px;font-family:var(--font-mono)">
+                <span style="color:var(--accent-blue)">i</span>
+                <span style="color:var(--text-muted)">int</span>
+                <span style="color:var(--accent-emerald)" id="var-i">2</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg-elevated);border-radius:6px;border:1px solid var(--border-subtle);font-size:12px;font-family:var(--font-mono)">
+                <span style="color:var(--accent-blue)">j</span>
+                <span style="color:var(--text-muted)">int</span>
+                <span style="color:var(--accent-emerald)" id="var-j">4</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg-elevated);border-radius:6px;border:1px solid var(--border-subtle);font-size:12px;font-family:var(--font-mono)">
+                <span style="color:var(--accent-blue)">n</span>
+                <span style="color:var(--text-muted)">int</span>
+                <span style="color:var(--text-secondary)">7</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Line-by-line -->
+      <div class="feature-card card-hover reveal delay-100" id="feature-line">
+        <div class="feature-card-content">
+          <div class="feature-icon feature-icon-line">📍</div>
+          <h3 class="feature-card-title">Interactive Line-by-Line</h3>
+          <p class="feature-card-desc">
+            Click any line and instantly understand why it exists, 
+            what it changes, how it affects execution, and what happens if you remove it.
+          </p>
+          <div class="feature-tags">
+            <span class="chip">Why it exists</span>
+            <span class="chip">Side effects</span>
+            <span class="chip">Edge cases</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Mentor -->
+      <div class="feature-card card-hover reveal delay-200" id="feature-ai">
+        <div class="feature-card-content">
+          <div class="feature-icon feature-icon-ai">🧠</div>
+          <h3 class="feature-card-title">AI Mentor Mode</h3>
+          <p class="feature-card-desc">
+            Your AI mentor never just gives you the answer. Instead, it guides you with 
+            questions, hints, and encouragement — like a senior dev sitting beside you.
+          </p>
+          <div class="feature-tags">
+            <span class="chip">Socratic method</span>
+            <span class="chip">Guided hints</span>
+            <span class="chip">Deep intuition</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart Analysis -->
+      <div class="feature-card card-hover reveal delay-300" id="feature-smart">
+        <div class="feature-card-content">
+          <div class="feature-icon feature-icon-smart">⚡</div>
+          <h3 class="feature-card-title">Smart Code Analysis</h3>
+          <p class="feature-card-desc">
+            Instant structural analysis. Variables, functions, loops, recursion, 
+            complexity, edge cases — all surfaced in a clean, scannable breakdown.
+          </p>
+          <div class="feature-tags">
+            <span class="chip">O(n) complexity</span>
+            <span class="chip">Data structures</span>
+            <span class="chip">Edge cases</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════════ -->
+<section class="section" id="how" style="background:var(--bg-surface)" aria-labelledby="how-title">
+  <div class="container">
+    <div class="section-header reveal" style="text-align:center;max-width:none">
+      <div class="section-label" style="justify-content:center">🔄 Process</div>
+      <h2 class="section-title" id="how-title" style="text-align:center">
+        From code to clarity<br/>
+        <span class="gradient-text-emerald">in three steps</span>
+      </h2>
+    </div>
+    <div class="how-it-works-grid">
+      <div class="steps-list">
+        <div class="step-item active reveal" id="step-1" data-step="1">
+          <div class="step-number">01</div>
+          <div class="step-body">
+            <h3 class="step-title">Paste your code</h3>
+            <p class="step-desc">
+              Drop any code — Python, JavaScript, C++, Java, and more. 
+              Our editor accepts everything from single functions to full programs.
+              No setup, no configuration.
+            </p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+
+        <div class="step-item reveal delay-100" id="step-2" data-step="2">
+          <div class="step-number">02</div>
+          <div class="step-body">
+            <h3 class="step-title">AI analyzes &amp; explains</h3>
+            <p class="step-desc">
+              Gemini AI instantly parses structure, identifies patterns, 
+              calculates complexity, and generates interactive explanations tailored to your level.
+            </p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+
+        <div class="step-item reveal delay-200" id="step-3" data-step="3">
+          <div class="step-number">03</div>
+          <div class="step-body">
+            <h3 class="step-title">Watch it execute visually</h3>
+            <p class="step-desc">
+              Step through execution frame by frame. Watch memory change, 
+              variables update, algorithms animate — and understand at a level 
+              no textbook can teach.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="how-preview reveal delay-300">
+        <div class="how-preview-window" id="how-preview-window">
+          <div class="how-preview-header">
+            <div class="how-preview-tab active" data-preview="paste" id="preview-tab-paste">Paste</div>
+            <div class="how-preview-tab" data-preview="analyze" id="preview-tab-analyze">Analyze</div>
+            <div class="how-preview-tab" data-preview="visualize" id="preview-tab-visualize">Visualize</div>
+          </div>
+          <div class="how-preview-body" id="how-preview-body">
+            <!-- Content injected by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     ALGORITHM SHOWCASE
+════════════════════════════════════ -->
+<section class="section" id="showcase" aria-labelledby="showcase-title">
+  <div class="container">
+    <div class="section-header reveal" style="text-align:center;max-width:none">
+      <div class="section-label" style="justify-content:center">🎬 Algorithm Animations</div>
+      <h2 class="section-title" id="showcase-title" style="text-align:center">
+        Watch algorithms think.<br/>
+        <span class="gradient-text">Live, interactive, beautiful.</span>
+      </h2>
+      <p class="section-subtitle" style="margin:0 auto;text-align:center">
+        Every algorithm animated step-by-step. Pause, rewind, speed up — you're in control.
+      </p>
+    </div>
+
+    <div class="algo-showcase reveal">
+      <div class="algo-header">
+        <div class="algo-tabs">
+          <button class="algo-tab active" data-algo="bubble" id="algo-tab-bubble">Bubble Sort</button>
+          <button class="algo-tab" data-algo="binary"  id="algo-tab-binary">Binary Search</button>
+          <button class="algo-tab" data-algo="fib"     id="algo-tab-fib">Fibonacci</button>
+          <button class="algo-tab" data-algo="bfs"     id="algo-tab-bfs">BFS</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="badge badge-emerald" style="font-size:10px" id="algo-complexity">O(n²) time · O(1) space</span>
+        </div>
+      </div>
+
+      <div class="algo-body">
+        <!-- Code side -->
+        <div class="algo-code-side">
+          <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
+            <span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted)">Algorithm Code</span>
+            <span class="badge badge-accent" style="font-size:10px" id="algo-lang">Python</span>
+          </div>
+          <div id="algo-code" style="font-size:12px;line-height:22px"></div>
+        </div>
+
+        <div class="algo-sep"></div>
+
+        <!-- Viz side -->
+        <div class="algo-viz-side">
+          <div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted)">Live Visualization</span>
+            <div style="display:flex;gap:6px;align-items:center;font-size:11px;color:var(--text-muted)">
+              <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:rgba(124,110,232,0.5);display:inline-block"></span>Normal</span>
+              <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:rgba(245,158,11,0.7);display:inline-block"></span>Comparing</span>
+              <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:rgba(16,185,129,0.7);display:inline-block"></span>Sorted</span>
+            </div>
+          </div>
+          <div class="sort-bars" id="sort-bars"></div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap" id="algo-stats">
+            <div style="padding:5px 10px;background:var(--bg-overlay);border-radius:6px;font-size:11px;color:var(--text-secondary)">
+              Comparisons: <strong id="algo-comparisons" style="color:var(--accent-primary);font-family:var(--font-mono)">0</strong>
+            </div>
+            <div style="padding:5px 10px;background:var(--bg-overlay);border-radius:6px;font-size:11px;color:var(--text-secondary)">
+              Swaps: <strong id="algo-swaps" style="color:var(--accent-amber);font-family:var(--font-mono)">0</strong>
+            </div>
+            <div style="padding:5px 10px;background:var(--bg-overlay);border-radius:6px;font-size:11px;color:var(--text-secondary)">
+              Step: <strong id="algo-step" style="color:var(--accent-cyan);font-family:var(--font-mono)">0</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="algo-controls">
+        <button class="btn btn-secondary btn-sm" id="algo-reset" aria-label="Reset animation">↺ Reset</button>
+        <button class="btn btn-primary btn-sm" id="algo-play" aria-label="Play/pause animation">▶ Play</button>
+        <button class="btn btn-secondary btn-sm" id="algo-step-btn" aria-label="Step forward">⏭ Step</button>
+        <div style="flex:1"></div>
+        <span class="speed-label">Speed:</span>
+        <button class="btn btn-ghost btn-sm speed-option active" data-speed="600" id="speed-slow">0.5×</button>
+        <button class="btn btn-ghost btn-sm speed-option" data-speed="350" id="speed-normal">1×</button>
+        <button class="btn btn-ghost btn-sm speed-option" data-speed="150" id="speed-fast">2×</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     TESTIMONIALS
+════════════════════════════════════ -->
+<section class="section" id="testimonials" style="background:var(--bg-surface)" aria-labelledby="testimonials-title">
+  <div class="container">
+    <div class="section-header reveal" style="text-align:center;max-width:none">
+      <div class="section-label" style="justify-content:center">💬 Social Proof</div>
+      <h2 class="section-title" id="testimonials-title" style="text-align:center">
+        Loved by <span class="gradient-text">developers worldwide</span>
+      </h2>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal" id="testimonial-1">
+        <div class="testimonial-stars">★★★★★</div>
+        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin:12px 0">
+          "I finally understood recursion after 6 months of struggling. 
+          Watching the call stack animate was a <strong style="color:var(--text-primary)">complete game changer</strong>. 
+          No tutorial ever explained it this way."
+        </p>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="avatar" style="background:linear-gradient(135deg,#7c6ee8,#3b82f6)">A</div>
+          <div>
+            <div style="font-size:13px;font-weight:600">Aisha Mehta</div>
+            <div style="font-size:12px;color:var(--text-muted)">CS Student · IIT Delhi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal delay-100" id="testimonial-2">
+        <div class="testimonial-stars">★★★★★</div>
+        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin:12px 0">
+          "The AI Mentor mode is unlike anything I've seen. It doesn't just give answers — 
+          it makes you <strong style="color:var(--text-primary)">actually think</strong>. 
+          This is how programming should be taught."
+        </p>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="avatar" style="background:linear-gradient(135deg,#10b981,#06b6d4)">M</div>
+          <div>
+            <div style="font-size:13px;font-weight:600">Marcus Chen</div>
+            <div style="font-size:12px;color:var(--text-muted)">Bootcamp Graduate · San Francisco</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal delay-200" id="testimonial-3">
+        <div class="testimonial-stars">★★★★★</div>
+        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin:12px 0">
+          "I use CodeLens with my CS101 students. Seeing their faces light up when 
+          they watch a tree traversal animate is <strong style="color:var(--text-primary)">pure magic</strong>. 
+          Highly recommend for instructors."
+        </p>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="avatar" style="background:linear-gradient(135deg,#f59e0b,#f43f5e)">S</div>
+          <div>
+            <div style="font-size:13px;font-weight:600">Dr. Sarah Williams</div>
+            <div style="font-size:12px;color:var(--text-muted)">CS Professor · Stanford</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal delay-100" id="testimonial-4">
+        <div class="testimonial-stars">★★★★★</div>
+        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin:12px 0">
+          "Used CodeLens to prep for FAANG interviews. The algorithm animations 
+          helped me <strong style="color:var(--text-primary)">internalize patterns</strong> instead of just memorizing solutions. Got the offer."
+        </p>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="avatar" style="background:linear-gradient(135deg,#3b82f6,#7c6ee8)">J</div>
+          <div>
+            <div style="font-size:13px;font-weight:600">Jordan Park</div>
+            <div style="font-size:12px;color:var(--text-muted)">SWE · Google (New hire)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal delay-200" id="testimonial-5">
+        <div class="testimonial-stars">★★★★★</div>
+        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin:12px 0">
+          "The design is <strong style="color:var(--text-primary)">phenomenal</strong>. Every other learning tool feels clunky after using CodeLens. 
+          It's the kind of tool you show off to friends."
+        </p>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="avatar" style="background:linear-gradient(135deg,#06b6d4,#10b981)">P</div>
+          <div>
+            <div style="font-size:13px;font-weight:600">Priya Sharma</div>
+            <div style="font-size:12px;color:var(--text-muted)">Self-taught Dev · London</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal delay-300" id="testimonial-6">
+        <div class="testimonial-stars">★★★★★</div>
+        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin:12px 0">
+          "As a YouTube educator, this is what I've been looking for. 
+          CodeLens makes explanations visual without me needing to build animations manually. 
+          <strong style="color:var(--text-primary)">Revolutionary for content creators.</strong>"
+        </p>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="avatar" style="background:linear-gradient(135deg,#f43f5e,#f59e0b)">K</div>
+          <div>
+            <div style="font-size:13px;font-weight:600">Kevin O'Brien</div>
+            <div style="font-size:12px;color:var(--text-muted)">YouTube Educator · 400k subs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     UPCOMING FEATURES
+════════════════════════════════════ -->
+<section class="section" id="upcoming" aria-labelledby="upcoming-title" style="background:var(--bg-surface)">
+  <div class="container">
+    <div class="section-header reveal" style="text-align:center;max-width:none">
+      <div class="section-label" style="justify-content:center">🚀 What's Next</div>
+      <h2 class="section-title" id="upcoming-title" style="text-align:center">
+        The future of CodeLens is<br/>
+        <span class="gradient-text">already in motion.</span>
+      </h2>
+      <p class="section-subtitle" style="margin:0 auto;text-align:center">
+        We're building the most complete AI programming education platform ever made.
+        Here's what's coming.
+      </p>
+    </div>
+
+    <div class="upcoming-grid" id="upcoming-grid">
+      <div class="upcoming-card reveal" id="uc-compiler">
+        <div class="upcoming-icon" style="background:rgba(124,110,232,0.12)">⚙️</div>
+        <div class="upcoming-badge">Coming Soon</div>
+        <h3 class="upcoming-title">AI Compiler</h3>
+        <p class="upcoming-desc">Run your code in-browser with full output, error traces, and AI-generated fix suggestions instantly.</p>
+      </div>
+      <div class="upcoming-card reveal delay-100" id="uc-live">
+        <div class="upcoming-icon" style="background:rgba(16,185,129,0.10)">▶️</div>
+        <div class="upcoming-badge" style="background:rgba(16,185,129,0.1);color:var(--accent-emerald);border-color:rgba(16,185,129,0.2)">Coming Soon</div>
+        <h3 class="upcoming-title">Live Execution</h3>
+        <p class="upcoming-desc">Watch your code execute in real time, line by line, with live stdout and variable state alongside.</p>
+      </div>
+      <div class="upcoming-card reveal delay-200" id="uc-memory">
+        <div class="upcoming-icon" style="background:rgba(59,130,246,0.10)">🧩</div>
+        <div class="upcoming-badge" style="background:rgba(59,130,246,0.1);color:var(--accent-blue);border-color:rgba(59,130,246,0.2)">Coming Soon</div>
+        <h3 class="upcoming-title">Memory Visualizer</h3>
+        <p class="upcoming-desc">See stack and heap memory in real time. Understand pointers, references, and memory allocation visually.</p>
+      </div>
+      <div class="upcoming-card reveal delay-100" id="uc-interview">
+        <div class="upcoming-icon" style="background:rgba(245,158,11,0.10)">🎯</div>
+        <div class="upcoming-badge" style="background:rgba(245,158,11,0.1);color:var(--accent-amber);border-color:rgba(245,158,11,0.2)">Coming Soon</div>
+        <h3 class="upcoming-title">Interview Mode</h3>
+        <p class="upcoming-desc">AI-powered mock interviews. Practice FAANG-style problems with real-time hints, hints only when you're stuck.</p>
+      </div>
+      <div class="upcoming-card reveal delay-200" id="uc-practice">
+        <div class="upcoming-icon" style="background:rgba(244,63,94,0.10)">🏋️</div>
+        <div class="upcoming-badge" style="background:rgba(244,63,94,0.1);color:var(--accent-rose);border-color:rgba(244,63,94,0.2)">Coming Soon</div>
+        <h3 class="upcoming-title">Practice Generator</h3>
+        <p class="upcoming-desc">AI generates personalized coding problems based on your weak spots and learning history. Adaptive and smart.</p>
+      </div>
+      <div class="upcoming-card reveal delay-300" id="uc-collab">
+        <div class="upcoming-icon" style="background:rgba(6,182,212,0.10)">👥</div>
+        <div class="upcoming-badge" style="background:rgba(6,182,212,0.1);color:var(--accent-cyan);border-color:rgba(6,182,212,0.2)">Coming Soon</div>
+        <h3 class="upcoming-title">Team Collaboration</h3>
+        <p class="upcoming-desc">Pair program, review code together, and share visualizations with your team in real time.</p>
+      </div>
+      <div class="upcoming-card reveal delay-100" id="uc-voice">
+        <div class="upcoming-icon" style="background:rgba(124,110,232,0.12)">🎙️</div>
+        <div class="upcoming-badge">Coming Soon</div>
+        <h3 class="upcoming-title">Voice Explanation</h3>
+        <p class="upcoming-desc">Listen to your code explained out loud by AI. Perfect for commuting, accessibility, and audio learners.</p>
+      </div>
+      <div class="upcoming-card reveal delay-200" id="uc-whiteboard">
+        <div class="upcoming-icon" style="background:rgba(16,185,129,0.10)">🖊️</div>
+        <div class="upcoming-badge" style="background:rgba(16,185,129,0.1);color:var(--accent-emerald);border-color:rgba(16,185,129,0.2)">Coming Soon</div>
+        <h3 class="upcoming-title">AI Whiteboard</h3>
+        <p class="upcoming-desc">Draw your algorithm or data structure. AI converts it into working code and animates the execution.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     FAQ
+════════════════════════════════════ -->
+<section class="section-sm" id="faq" style="background:var(--bg-surface)" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="section-header reveal" style="text-align:center;max-width:none;margin-bottom:48px">
+      <div class="section-label" style="justify-content:center">❓ FAQ</div>
+      <h2 class="section-title" id="faq-title" style="text-align:center">
+        Frequently asked <span class="gradient-text">questions</span>
+      </h2>
+    </div>
+
+    <div class="faq-grid" id="faq-grid">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     CTA SECTION
+════════════════════════════════════ -->
+<section class="section" aria-label="Call to action">
+  <div class="container">
+    <div class="cta-section reveal" id="cta-section">
+      <div class="cta-content">
+        <div class="hero-eyebrow" style="display:inline-flex;margin-bottom:24px">
+          <span class="hero-eyebrow-dot"></span>
+          Ready to understand code differently?
+        </div>
+        <h2 style="font-size:clamp(36px,5vw,64px);font-weight:900;letter-spacing:-0.04em;margin-bottom:20px;line-height:1.05">
+          Start seeing your<br/>
+          <span class="gradient-text">code think.</span>
+        </h2>
+        <p style="font-size:18px;color:var(--text-secondary);max-width:520px;margin:0 auto 40px;line-height:1.7">
+          Join thousands of developers who finally understand what their code is doing — visually, interactively, intelligently.
+        </p>
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap">
+          <a href="workspace.html" class="btn btn-primary btn-lg" id="cta-main-btn">✦ Start for Free — No Card Needed</a>
+          <button class="btn btn-secondary btn-lg" id="cta-demo-btn">Watch 2-min Demo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     FOOTER
+════════════════════════════════════ -->
+<footer class="footer" role="contentinfo" aria-label="Site footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" style="margin-bottom:0">
+          <div class="nav-logo-icon">🔭</div>
+          <span style="font-size:16px;font-weight:700">CodeLens</span>
+        </div>
+        <p>AI-powered visual programming mentor. See your code think.</p>
+        <div class="footer-social" style="margin-top:20px">
+          <a href="#" class="social-btn" aria-label="Twitter" id="social-twitter">𝕏</a>
+          <a href="#" class="social-btn" aria-label="GitHub" id="social-github">⌥</a>
+          <a href="#" class="social-btn" aria-label="Discord" id="social-discord">◈</a>
+          <a href="#" class="social-btn" aria-label="LinkedIn" id="social-linkedin">in</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <div class="footer-links">
+          <a href="#features"  class="footer-link">Features</a>
+          <a href="#showcase"  class="footer-link">Algorithm Showcase</a>
+          <a href="#upcoming"  class="footer-link">Upcoming Features</a>
+          <a href="workspace.html" class="footer-link">Workspace →</a>
+          <a href="#"          class="footer-link">Changelog</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Learn</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Documentation</a>
+          <a href="#" class="footer-link">Tutorials</a>
+          <a href="#" class="footer-link">Blog</a>
+          <a href="#" class="footer-link">Community</a>
+          <a href="#" class="footer-link">YouTube Channel</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Company</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link">About</a>
+          <a href="#" class="footer-link">Careers</a>
+          <a href="#" class="footer-link">Press Kit</a>
+          <a href="#" class="footer-link">Contact</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Privacy Policy</a>
+          <a href="#" class="footer-link">Terms of Service</a>
+          <a href="#" class="footer-link">Cookie Policy</a>
+          <a href="#" class="footer-link">Security</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 CodeLens. All rights reserved. Built with ✦ by developers, for developers.</p>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:var(--text-muted)">Powered by</span>
+        <span class="badge badge-accent" style="font-size:10px">Gemini AI</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="scripts/main.js"></script>
+</body>
+</html>
