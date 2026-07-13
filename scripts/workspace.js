@@ -13,23 +13,23 @@ const AUTOSAVE_DELAY = 1000; // ms
 
 // ── Backend API base URL ──────────────────────────────────
 // Relative path works whether served by Express or opened via file://
-const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
+const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:3000' : 'https://codelens-vb6o.onrender.com';
 
 // ── Session ID for server-side saves ───────────────────────
 let _sessionId = localStorage.getItem('codelens_session_id') || null;
 
 const LANG_MAP = {
-  '.py':   { monaco: 'python',     label: 'Python',     icon: '🐍' },
-  '.js':   { monaco: 'javascript', label: 'JavaScript', icon: '🟨' },
-  '.ts':   { monaco: 'typescript', label: 'TypeScript', icon: '🔷' },
-  '.cpp':  { monaco: 'cpp',        label: 'C++',        icon: '⚡' },
-  '.c':    { monaco: 'c',          label: 'C',          icon: '©️' },
-  '.java': { monaco: 'java',       label: 'Java',       icon: '☕' },
-  '.go':   { monaco: 'go',         label: 'Go',         icon: '🐹' },
-  '.rs':   { monaco: 'rust',       label: 'Rust',       icon: '🦀' },
-  '.md':   { monaco: 'markdown',   label: 'Markdown',   icon: '📝' },
-  '.html': { monaco: 'html',       label: 'HTML',       icon: '🌐' },
-  '.css':  { monaco: 'css',        label: 'CSS',        icon: '🎨' },
+  '.py': { monaco: 'python', label: 'Python', icon: '🐍' },
+  '.js': { monaco: 'javascript', label: 'JavaScript', icon: '🟨' },
+  '.ts': { monaco: 'typescript', label: 'TypeScript', icon: '🔷' },
+  '.cpp': { monaco: 'cpp', label: 'C++', icon: '⚡' },
+  '.c': { monaco: 'c', label: 'C', icon: '©️' },
+  '.java': { monaco: 'java', label: 'Java', icon: '☕' },
+  '.go': { monaco: 'go', label: 'Go', icon: '🐹' },
+  '.rs': { monaco: 'rust', label: 'Rust', icon: '🦀' },
+  '.md': { monaco: 'markdown', label: 'Markdown', icon: '📝' },
+  '.html': { monaco: 'html', label: 'HTML', icon: '🌐' },
+  '.css': { monaco: 'css', label: 'CSS', icon: '🎨' },
 };
 
 // ══════════════════════════════════════════════
@@ -131,40 +131,40 @@ function initMonaco() {
       base: 'vs-dark',
       inherit: true,
       rules: [
-        { token: 'comment',     foreground: '546e7a', fontStyle: 'italic' },
-        { token: 'keyword',     foreground: 'c792ea', fontStyle: 'bold' },
-        { token: 'string',      foreground: 'c3e88d' },
-        { token: 'number',      foreground: 'f78c6c' },
-        { token: 'type',        foreground: 'ffcb6b' },
-        { token: 'function',    foreground: '82aaff' },
-        { token: 'variable',    foreground: 'f07178' },
-        { token: 'operator',    foreground: '89ddff' },
-        { token: 'delimiter',   foreground: '89ddff' },
-        { token: 'identifier',  foreground: 'eeffff' },
+        { token: 'comment', foreground: '546e7a', fontStyle: 'italic' },
+        { token: 'keyword', foreground: 'c792ea', fontStyle: 'bold' },
+        { token: 'string', foreground: 'c3e88d' },
+        { token: 'number', foreground: 'f78c6c' },
+        { token: 'type', foreground: 'ffcb6b' },
+        { token: 'function', foreground: '82aaff' },
+        { token: 'variable', foreground: 'f07178' },
+        { token: 'operator', foreground: '89ddff' },
+        { token: 'delimiter', foreground: '89ddff' },
+        { token: 'identifier', foreground: 'eeffff' },
       ],
       colors: {
-        'editor.background':           '#080b14',
-        'editor.foreground':           '#f1f5f9',
+        'editor.background': '#080b14',
+        'editor.foreground': '#f1f5f9',
         'editor.lineHighlightBackground': '#111827',
-        'editor.selectionBackground':  '#7c6ee840',
+        'editor.selectionBackground': '#7c6ee840',
         'editor.inactiveSelectionBackground': '#7c6ee820',
         'editorLineNumber.foreground': '#475569',
         'editorLineNumber.activeForeground': '#7c6ee8',
-        'editorCursor.foreground':     '#7c6ee8',
-        'editor.findMatchBackground':  '#f59e0b30',
+        'editorCursor.foreground': '#7c6ee8',
+        'editor.findMatchBackground': '#f59e0b30',
         'editor.findMatchHighlightBackground': '#f59e0b18',
-        'editorWidget.background':     '#0d1117',
-        'editorWidget.border':         '#ffffff10',
+        'editorWidget.background': '#0d1117',
+        'editorWidget.border': '#ffffff10',
         'editorSuggestWidget.background': '#0d1117',
-        'editorSuggestWidget.border':  '#ffffff10',
+        'editorSuggestWidget.border': '#ffffff10',
         'editorSuggestWidget.selectedBackground': '#7c6ee820',
         'editorBracketMatch.background': '#7c6ee830',
-        'editorBracketMatch.border':   '#7c6ee8',
-        'scrollbarSlider.background':  '#ffffff18',
+        'editorBracketMatch.border': '#7c6ee8',
+        'scrollbarSlider.background': '#ffffff18',
         'scrollbarSlider.hoverBackground': '#7c6ee840',
         'scrollbarSlider.activeBackground': '#7c6ee860',
-        'editorGutter.background':     '#0d1117',
-        'minimap.background':          '#0d1117',
+        'editorGutter.background': '#0d1117',
+        'minimap.background': '#0d1117',
       }
     });
 
@@ -275,27 +275,27 @@ function registerCustomCompletions() {
   monaco.languages.registerCompletionItemProvider('cpp', {
     triggerCharacters: ['#', ':', '<', '.'],
     provideCompletionItems(model, position) {
-      const word   = model.getWordUntilPosition(position);
-      const range  = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: word.startColumn, endColumn: word.endColumn };
-      const line   = model.getLineContent(position.lineNumber);
-      const items  = [];
+      const word = model.getWordUntilPosition(position);
+      const range = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: word.startColumn, endColumn: word.endColumn };
+      const line = model.getLineContent(position.lineNumber);
+      const items = [];
 
       if (line.trim().startsWith('#include')) {
-        const headers = ['<iostream>','<vector>','<string>','<algorithm>','<map>','<set>','<unordered_map>','<queue>','<stack>','<list>','<deque>','<array>','<cmath>','<cstdlib>','<cstring>','<cassert>','<climits>','<fstream>','<sstream>','<utility>','<numeric>','<functional>','<memory>','<thread>','<mutex>','<chrono>'];
+        const headers = ['<iostream>', '<vector>', '<string>', '<algorithm>', '<map>', '<set>', '<unordered_map>', '<queue>', '<stack>', '<list>', '<deque>', '<array>', '<cmath>', '<cstdlib>', '<cstring>', '<cassert>', '<climits>', '<fstream>', '<sstream>', '<utility>', '<numeric>', '<functional>', '<memory>', '<thread>', '<mutex>', '<chrono>'];
         headers.forEach(h => items.push({ label: h, kind: monaco.languages.CompletionItemKind.Module, insertText: h, range, detail: 'C++ Header' }));
       }
 
       const snippets = [
-        { label: 'for',    insertText: 'for (int ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {\n\t$0\n}', doc: 'For loop' },
-        { label: 'while',  insertText: 'while (${1:condition}) {\n\t$0\n}',                           doc: 'While loop' },
-        { label: 'if',     insertText: 'if (${1:condition}) {\n\t$0\n}',                              doc: 'If statement' },
-        { label: 'cout',   insertText: 'std::cout << ${1:value} << std::endl;',                       doc: 'Console output' },
-        { label: 'cin',    insertText: 'std::cin >> ${1:variable};',                                   doc: 'Console input' },
-        { label: 'vector', insertText: 'std::vector<${1:int}> ${2:v};',                               doc: 'STL vector' },
-        { label: 'main',   insertText: 'int main() {\n\t$0\n\treturn 0;\n}',                          doc: 'Main function' },
-        { label: 'class',  insertText: 'class ${1:Name} {\npublic:\n\t$0\n};',                        doc: 'Class definition' },
-        { label: 'struct', insertText: 'struct ${1:Name} {\n\t$0\n};',                                doc: 'Struct definition' },
-        { label: 'func',   insertText: '${1:void} ${2:functionName}(${3:params}) {\n\t$0\n}',         doc: 'Function definition' },
+        { label: 'for', insertText: 'for (int ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {\n\t$0\n}', doc: 'For loop' },
+        { label: 'while', insertText: 'while (${1:condition}) {\n\t$0\n}', doc: 'While loop' },
+        { label: 'if', insertText: 'if (${1:condition}) {\n\t$0\n}', doc: 'If statement' },
+        { label: 'cout', insertText: 'std::cout << ${1:value} << std::endl;', doc: 'Console output' },
+        { label: 'cin', insertText: 'std::cin >> ${1:variable};', doc: 'Console input' },
+        { label: 'vector', insertText: 'std::vector<${1:int}> ${2:v};', doc: 'STL vector' },
+        { label: 'main', insertText: 'int main() {\n\t$0\n\treturn 0;\n}', doc: 'Main function' },
+        { label: 'class', insertText: 'class ${1:Name} {\npublic:\n\t$0\n};', doc: 'Class definition' },
+        { label: 'struct', insertText: 'struct ${1:Name} {\n\t$0\n};', doc: 'Struct definition' },
+        { label: 'func', insertText: '${1:void} ${2:functionName}(${3:params}) {\n\t$0\n}', doc: 'Function definition' },
       ];
       snippets.forEach(s => items.push({
         label: s.label,
@@ -314,34 +314,36 @@ function registerCustomCompletions() {
   monaco.languages.registerCompletionItemProvider('python', {
     triggerCharacters: ['.', ' ', '('],
     provideCompletionItems(model, position) {
-      const word  = model.getWordUntilPosition(position);
+      const word = model.getWordUntilPosition(position);
       const range = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: word.startColumn, endColumn: word.endColumn };
       const snippets = [
-        { label: 'def',        insertText: 'def ${1:function_name}(${2:params}):\n\t$0',                 doc: 'Function definition' },
-        { label: 'class',      insertText: 'class ${1:ClassName}:\n\tdef __init__(self):\n\t\t$0',        doc: 'Class definition' },
-        { label: 'for',        insertText: 'for ${1:item} in ${2:iterable}:\n\t$0',                      doc: 'For loop' },
-        { label: 'while',      insertText: 'while ${1:condition}:\n\t$0',                                 doc: 'While loop' },
-        { label: 'if',         insertText: 'if ${1:condition}:\n\t$0',                                    doc: 'If statement' },
-        { label: 'ifelse',     insertText: 'if ${1:condition}:\n\t$0\nelse:\n\tpass',                     doc: 'If-else block' },
-        { label: 'try',        insertText: 'try:\n\t$0\nexcept ${1:Exception} as e:\n\tprint(e)',         doc: 'Try-except' },
-        { label: 'lambda',     insertText: 'lambda ${1:x}: ${2:x}',                                       doc: 'Lambda function' },
-        { label: 'listcomp',   insertText: '[${1:expr} for ${2:item} in ${3:iterable}]',                  doc: 'List comprehension' },
-        { label: 'print',      insertText: 'print(${1:value})',                                            doc: 'Print statement' },
-        { label: 'range',      insertText: 'range(${1:start}, ${2:stop})',                                 doc: 'Range object' },
-        { label: 'enumerate',  insertText: 'enumerate(${1:iterable})',                                     doc: 'Enumerate' },
-        { label: 'len',        insertText: 'len(${1:obj})',                                                doc: 'Length' },
-        { label: 'sorted',     insertText: 'sorted(${1:iterable}, key=${2:None})',                         doc: 'Sort' },
-        { label: 'import',     insertText: 'import ${1:module}',                                           doc: 'Import module' },
-        { label: 'from',       insertText: 'from ${1:module} import ${2:name}',                            doc: 'From import' },
+        { label: 'def', insertText: 'def ${1:function_name}(${2:params}):\n\t$0', doc: 'Function definition' },
+        { label: 'class', insertText: 'class ${1:ClassName}:\n\tdef __init__(self):\n\t\t$0', doc: 'Class definition' },
+        { label: 'for', insertText: 'for ${1:item} in ${2:iterable}:\n\t$0', doc: 'For loop' },
+        { label: 'while', insertText: 'while ${1:condition}:\n\t$0', doc: 'While loop' },
+        { label: 'if', insertText: 'if ${1:condition}:\n\t$0', doc: 'If statement' },
+        { label: 'ifelse', insertText: 'if ${1:condition}:\n\t$0\nelse:\n\tpass', doc: 'If-else block' },
+        { label: 'try', insertText: 'try:\n\t$0\nexcept ${1:Exception} as e:\n\tprint(e)', doc: 'Try-except' },
+        { label: 'lambda', insertText: 'lambda ${1:x}: ${2:x}', doc: 'Lambda function' },
+        { label: 'listcomp', insertText: '[${1:expr} for ${2:item} in ${3:iterable}]', doc: 'List comprehension' },
+        { label: 'print', insertText: 'print(${1:value})', doc: 'Print statement' },
+        { label: 'range', insertText: 'range(${1:start}, ${2:stop})', doc: 'Range object' },
+        { label: 'enumerate', insertText: 'enumerate(${1:iterable})', doc: 'Enumerate' },
+        { label: 'len', insertText: 'len(${1:obj})', doc: 'Length' },
+        { label: 'sorted', insertText: 'sorted(${1:iterable}, key=${2:None})', doc: 'Sort' },
+        { label: 'import', insertText: 'import ${1:module}', doc: 'Import module' },
+        { label: 'from', insertText: 'from ${1:module} import ${2:name}', doc: 'From import' },
       ];
-      return { suggestions: snippets.map(s => ({
-        label: s.label,
-        kind: monaco.languages.CompletionItemKind.Snippet,
-        insertText: s.insertText,
-        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        documentation: s.doc,
-        range,
-      }))};
+      return {
+        suggestions: snippets.map(s => ({
+          label: s.label,
+          kind: monaco.languages.CompletionItemKind.Snippet,
+          insertText: s.insertText,
+          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          documentation: s.doc,
+          range,
+        }))
+      };
     }
   });
 }
@@ -350,12 +352,12 @@ function registerCustomCompletions() {
 // FILE MANAGEMENT
 // ══════════════════════════════════════════════
 function getLangConfig(ext) {
-  return LANG_MAP[ext] || { monaco: 'plaintext', label: ext.replace('.','').toUpperCase() || 'Text', icon: '📄' };
+  return LANG_MAP[ext] || { monaco: 'plaintext', label: ext.replace('.', '').toUpperCase() || 'Text', icon: '📄' };
 }
 
 function createFile(name, ext) {
   const cfg = getLangConfig(ext);
-  const id  = uid();
+  const id = uid();
   const file = {
     id, name, lang: cfg.label, ext,
     icon: cfg.icon, monacoLang: cfg.monaco,
@@ -378,21 +380,21 @@ function createFile(name, ext) {
 
 function getDefaultSnippet(lang) {
   const snippets = {
-    python:     '# Write your Python code here\n\ndef main():\n    pass\n\nif __name__ == "__main__":\n    main()\n',
+    python: '# Write your Python code here\n\ndef main():\n    pass\n\nif __name__ == "__main__":\n    main()\n',
     javascript: '// Write your JavaScript code here\n\nfunction main() {\n    \n}\n\nmain();\n',
     typescript: '// Write your TypeScript code here\n\nfunction main(): void {\n    \n}\n\nmain();\n',
-    cpp:        '#include <iostream>\nusing namespace std;\n\nint main() {\n    \n    return 0;\n}\n',
-    c:          '#include <stdio.h>\n\nint main() {\n    \n    return 0;\n}\n',
-    java:       'public class Main {\n    public static void main(String[] args) {\n        \n    }\n}\n',
-    go:         'package main\n\nimport "fmt"\n\nfunc main() {\n    \n}\n',
-    rust:       'fn main() {\n    \n}\n',
-    markdown:   '# My Notes\n\n',
+    cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    \n    return 0;\n}\n',
+    c: '#include <stdio.h>\n\nint main() {\n    \n    return 0;\n}\n',
+    java: 'public class Main {\n    public static void main(String[] args) {\n        \n    }\n}\n',
+    go: 'package main\n\nimport "fmt"\n\nfunc main() {\n    \n}\n',
+    rust: 'fn main() {\n    \n}\n',
+    markdown: '# My Notes\n\n',
   };
   return snippets[lang] || '';
 }
 
 function deleteFile(id) {
-  const idx  = state.files.findIndex(f => f.id === id);
+  const idx = state.files.findIndex(f => f.id === id);
   if (idx === -1) return;
   const name = state.files[idx].name;
 
@@ -418,11 +420,11 @@ function duplicateFile(id) {
   const src = state.files.find(f => f.id === id);
   if (!src) return;
   const baseName = src.name.replace(src.ext, '');
-  const newName  = `${baseName}_copy${src.ext}`;
-  const content  = monacoModels[id]?.getValue() ?? src.content;
+  const newName = `${baseName}_copy${src.ext}`;
+  const content = monacoModels[id]?.getValue() ?? src.content;
 
-  const cfg    = getLangConfig(src.ext);
-  const newId  = uid();
+  const cfg = getLangConfig(src.ext);
+  const newId = uid();
   const newFile = { id: newId, name: newName, lang: src.lang, ext: src.ext, icon: src.icon, monacoLang: src.monacoLang, content, modified: false };
   state.files.push(newFile);
 
@@ -441,12 +443,12 @@ function renameFile(id, newName) {
   const file = state.files.find(f => f.id === id);
   if (!file) return;
 
-  const ext   = newName.includes('.') ? '.' + newName.split('.').pop() : file.ext;
-  const cfg   = getLangConfig(ext);
+  const ext = newName.includes('.') ? '.' + newName.split('.').pop() : file.ext;
+  const cfg = getLangConfig(ext);
   const oldName = file.name;
 
   file.name = newName;
-  file.ext  = ext;
+  file.ext = ext;
   file.lang = cfg.label;
   file.icon = cfg.icon;
   file.monacoLang = cfg.monaco;
@@ -505,12 +507,12 @@ function showEmptyState() {
 }
 
 function updateEditorHeader(file) {
-  const iconEl  = document.getElementById('editor-lang-icon');
+  const iconEl = document.getElementById('editor-lang-icon');
   const labelEl = document.getElementById('editor-lang-label');
-  const bread   = document.getElementById('breadcrumb-file');
-  if (iconEl)  iconEl.textContent  = file.icon;
+  const bread = document.getElementById('breadcrumb-file');
+  if (iconEl) iconEl.textContent = file.icon;
   if (labelEl) labelEl.textContent = file.lang;
-  if (bread)   bread.textContent   = file.name;
+  if (bread) bread.textContent = file.name;
   updateStatusLang(file);
   updateSaveStatus('saved');
 }
@@ -554,19 +556,19 @@ function saveAll() {
 async function saveToBackend() {
   try {
     const files = state.files.map(f => ({
-      id:         f.id,
-      name:       f.name,
-      lang:       f.lang,
-      ext:        f.ext,
-      icon:       f.icon,
+      id: f.id,
+      name: f.name,
+      lang: f.lang,
+      ext: f.ext,
+      icon: f.icon,
       monacoLang: f.monacoLang,
-      content:    monacoModels[f.id]?.getValue() ?? f.content,
-      modified:   false,
+      content: monacoModels[f.id]?.getValue() ?? f.content,
+      modified: false,
     }));
     const res = await fetch(`${API_BASE}/api/save`, {
-      method:  'POST',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ files, sessionId: _sessionId }),
+      body: JSON.stringify({ files, sessionId: _sessionId }),
     });
     if (res.ok) {
       const data = await res.json();
@@ -625,8 +627,8 @@ function renderFileTree() {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       const { action, id } = btn.dataset;
-      if (action === 'delete')    deleteFile(id);
-      else if (action === 'rename')    openRenameDialog(id);
+      if (action === 'delete') deleteFile(id);
+      else if (action === 'rename') openRenameDialog(id);
       else if (action === 'duplicate') duplicateFile(id);
     });
   });
@@ -645,7 +647,7 @@ function renderTabBar() {
          id="tab_${f.id}" tabindex="0">
       ${f.icon}
       <span class="tab-label">${f.name}</span>
-      <span class="tab-modified-dot" style="display:${f.modified?'inline-block':'none'};width:6px;height:6px;border-radius:50%;background:var(--accent-amber);margin-left:2px;flex-shrink:0"></span>
+      <span class="tab-modified-dot" style="display:${f.modified ? 'inline-block' : 'none'};width:6px;height:6px;border-radius:50%;background:var(--accent-amber);margin-left:2px;flex-shrink:0"></span>
       <button class="tab-close" data-id="${f.id}" aria-label="Close ${f.name}" title="Close">×</button>
     </div>
   `).join('');
@@ -668,12 +670,12 @@ function renderTabBar() {
 // NEW FILE DIALOG
 // ══════════════════════════════════════════════
 let _newExt = '.py';
-const defaultNames = { '.py':'main.py','.js':'index.js','.ts':'main.ts','.cpp':'main.cpp','.c':'main.c','.java':'Main.java','.go':'main.go','.rs':'main.rs','.md':'notes.md' };
+const defaultNames = { '.py': 'main.py', '.js': 'index.js', '.ts': 'main.ts', '.cpp': 'main.cpp', '.c': 'main.c', '.java': 'Main.java', '.go': 'main.go', '.rs': 'main.rs', '.md': 'notes.md' };
 
 function openNewFileDialog() {
   _newExt = '.py';
   const overlay = document.getElementById('new-file-overlay');
-  const input   = document.getElementById('new-file-input');
+  const input = document.getElementById('new-file-input');
   overlay.classList.add('open');
   input.value = '';
   input.placeholder = 'main.py';
@@ -705,14 +707,14 @@ document.querySelectorAll('.lang-picker-btn').forEach(btn => {
 });
 
 document.getElementById('new-file-confirm')?.addEventListener('click', confirmNewFile);
-document.getElementById('new-file-cancel')?.addEventListener('click',  closeNewFileDialog);
+document.getElementById('new-file-cancel')?.addEventListener('click', closeNewFileDialog);
 document.getElementById('new-file-input')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter')  confirmNewFile();
+  if (e.key === 'Enter') confirmNewFile();
   if (e.key === 'Escape') closeNewFileDialog();
 });
 document.getElementById('new-file-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeNewFileDialog(); });
 
-['sidebar-new-btn','file-new-inline','empty-new-file-btn','new-tab-btn'].forEach(id => {
+['sidebar-new-btn', 'file-new-inline', 'empty-new-file-btn', 'new-tab-btn'].forEach(id => {
   document.getElementById(id)?.addEventListener('click', openNewFileDialog);
 });
 
@@ -725,7 +727,7 @@ function openRenameDialog(id) {
   _renameId = id;
   const file = state.files.find(f => f.id === id);
   const overlay = document.getElementById('rename-overlay');
-  const input   = document.getElementById('rename-input');
+  const input = document.getElementById('rename-input');
   overlay.classList.add('open');
   if (input) { input.value = file?.name || ''; input.select(); input.focus(); }
 }
@@ -737,9 +739,9 @@ function confirmRename() {
 }
 
 document.getElementById('rename-confirm')?.addEventListener('click', confirmRename);
-document.getElementById('rename-cancel')?.addEventListener('click',  closeRenameDialog);
+document.getElementById('rename-cancel')?.addEventListener('click', closeRenameDialog);
 document.getElementById('rename-input')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter')  confirmRename();
+  if (e.key === 'Enter') confirmRename();
   if (e.key === 'Escape') closeRenameDialog();
 });
 document.getElementById('rename-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeRenameDialog(); });
@@ -748,23 +750,23 @@ document.getElementById('rename-overlay')?.addEventListener('click', e => { if (
 // TERMINAL
 // ══════════════════════════════════════════════
 const termHistory = [];
-let termHistIdx  = -1;
+let termHistIdx = -1;
 
 function toggleTerminal() {
   state.terminalOpen = !state.terminalOpen;
-  const pane    = document.getElementById('terminal-pane');
+  const pane = document.getElementById('terminal-pane');
   const divider = document.getElementById('terminal-divider');
-  const edPane  = document.getElementById('editor-pane');
+  const edPane = document.getElementById('editor-pane');
   const emptyEl = document.getElementById('editor-empty-state');
 
   if (state.terminalOpen) {
-    pane.style.display    = 'flex';
+    pane.style.display = 'flex';
     divider.style.display = 'flex';
-    pane.style.height     = `${state.terminalHeight}px`;
+    pane.style.height = `${state.terminalHeight}px`;
     terminalLog('info', 'Terminal opened. Note: Live execution requires a backend compiler service.');
     document.getElementById('terminal-input')?.focus();
   } else {
-    pane.style.display    = 'none';
+    pane.style.display = 'none';
     divider.style.display = 'none';
   }
 
@@ -795,7 +797,7 @@ function handleTerminalCommand(cmd) {
   terminalLog('output', `$ ${cmd}`);
 
   const parts = cmd.trim().split(/\s+/);
-  const verb  = parts[0].toLowerCase();
+  const verb = parts[0].toLowerCase();
 
   if (verb === 'clear' || verb === 'cls') { terminalClear(); return; }
   if (verb === 'help') {
@@ -816,21 +818,21 @@ function handleTerminalCommand(cmd) {
     if (!code.trim()) { terminalLog('error', 'File is empty — nothing to run.'); return; }
     terminalLog('info', `Running ${file.name}…`);
     fetch(`${API_BASE}/api/run`, {
-      method:  'POST',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ code, lang: file.monacoLang }),
+      body: JSON.stringify({ code, lang: file.monacoLang }),
     })
-    .then(r => r.json())
-    .then(data => {
-      if (data.output) data.output.split('\n').forEach(line => terminalLog('output', line));
-      if (data.error)  data.error.split('\n').forEach(line  => terminalLog('error',  line));
-      if (data.note)   terminalLog('warn', data.note);
-      terminalLog('info', `Finished in ${data.executionTime ?? 0}ms`);
-    })
-    .catch(err => {
-      terminalLog('error', `Run failed: ${err.message}`);
-      terminalLog('warn', 'Is the CodeLens server running? Start it with: npm run dev');
-    });
+      .then(r => r.json())
+      .then(data => {
+        if (data.output) data.output.split('\n').forEach(line => terminalLog('output', line));
+        if (data.error) data.error.split('\n').forEach(line => terminalLog('error', line));
+        if (data.note) terminalLog('warn', data.note);
+        terminalLog('info', `Finished in ${data.executionTime ?? 0}ms`);
+      })
+      .catch(err => {
+        terminalLog('error', `Run failed: ${err.message}`);
+        terminalLog('warn', 'Is the CodeLens server running? Start it with: npm run dev');
+      });
     return;
   }
   if (verb === 'save') { saveAll(); return; }
@@ -869,17 +871,17 @@ document.getElementById('terminal-input')?.addEventListener('keydown', e => {
 
   divider.addEventListener('mousedown', e => {
     dragging = true;
-    startY   = e.clientY;
-    startH   = parseInt(document.getElementById('terminal-pane').style.height) || 200;
-    document.body.style.userSelect   = 'none';
-    document.body.style.cursor       = 'row-resize';
+    startY = e.clientY;
+    startH = parseInt(document.getElementById('terminal-pane').style.height) || 200;
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'row-resize';
     e.preventDefault();
   });
 
   document.addEventListener('mousemove', e => {
     if (!dragging) return;
-    const delta  = startY - e.clientY;
-    const newH   = Math.max(80, Math.min(startH + delta, window.innerHeight * 0.6));
+    const delta = startY - e.clientY;
+    const newH = Math.max(80, Math.min(startH + delta, window.innerHeight * 0.6));
     state.terminalHeight = newH;
     document.getElementById('terminal-pane').style.height = `${newH}px`;
     if (state.monacoReady && monacoEditor) monacoEditor.layout();
@@ -895,7 +897,7 @@ document.getElementById('terminal-input')?.addEventListener('keydown', e => {
 // ══════════════════════════════════════════════
 function setAiStatus(msg, color = 'var(--accent-emerald)') {
   const label = document.getElementById('ai-mode-label');
-  const dot   = document.getElementById('ai-status-dot');
+  const dot = document.getElementById('ai-status-dot');
   if (label) label.textContent = msg;
   if (label) label.style.color = color;
   const dotEl = dot?.querySelector('span:first-child');
@@ -987,20 +989,20 @@ async function analyzeCode(file) {
   // Build local analysis for the execution timeline (Visualizer still needs it)
   try {
     const localAnalysis = deepAnalyze(file);
-    state.execSteps     = buildExecSteps(file, localAnalysis);
-    state.execIdx       = 0;
+    state.execSteps = buildExecSteps(file, localAnalysis);
+    state.execIdx = 0;
     renderTimeline();
-  } catch {}
+  } catch { }
 
   // ── POST /api/explain ──────────────────────────────────
   try {
     const language = file.monacoLang || 'unknown';
 
     const res = await fetch(`${API_BASE}/api/explain`, {
-      method:  'POST',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ code, language }),
-      signal:  AbortSignal.timeout(45000),
+      body: JSON.stringify({ code, language }),
+      signal: AbortSignal.timeout(45000),
     });
 
     // ── Error state ─────────────────────────────────────────
@@ -1019,7 +1021,7 @@ async function analyzeCode(file) {
           return;
         }
         errMsg = errData.error || errMsg;
-      } catch {}
+      } catch { }
       renderAiError(errMsg);
       setAiStatus('Error', 'var(--accent-rose)');
       return;
@@ -1047,24 +1049,24 @@ async function analyzeCode(file) {
 
 // ── Deep Code Parser (client-side, no backend needed) ──
 function deepAnalyze(file) {
-  const code  = file.content;
+  const code = file.content;
   const lines = code.split('\n');
-  const lang  = file.monacoLang || 'plaintext';
+  const lang = file.monacoLang || 'plaintext';
 
   const result = {
     lang,
     lineCount: lines.length,
     charCount: code.length,
     functions: [],
-    classes:   [],
-    loops:     [],
-    conditions:[],
+    classes: [],
+    loops: [],
+    conditions: [],
     variables: [],
-    imports:   [],
+    imports: [],
     recursion: false,
     hasArrays: false,
     complexity: { time: 'O(1)', space: 'O(1)' },
-    errors:    [],
+    errors: [],
   };
 
   lines.forEach((line, i) => {
@@ -1072,10 +1074,10 @@ function deepAnalyze(file) {
     const lineNum = i + 1;
 
     // Functions
-    const pyFn  = ln.match(/^def\s+([a-zA-Z_]\w*)\s*\(/);
-    const jsFn  = ln.match(/^(?:function\s+([a-zA-Z_]\w*)|(?:const|let|var)\s+([a-zA-Z_]\w*)\s*=\s*(?:async\s*)?\(|([a-zA-Z_]\w*)\s*=\s*(?:async\s*)?\()/);
+    const pyFn = ln.match(/^def\s+([a-zA-Z_]\w*)\s*\(/);
+    const jsFn = ln.match(/^(?:function\s+([a-zA-Z_]\w*)|(?:const|let|var)\s+([a-zA-Z_]\w*)\s*=\s*(?:async\s*)?\(|([a-zA-Z_]\w*)\s*=\s*(?:async\s*)?\()/);
     const cppFn = ln.match(/^(?:int|void|bool|string|float|double|auto|char)\s+([a-zA-Z_]\w*)\s*\(/);
-    const javaFn= ln.match(/^(?:public|private|protected|static|\s)*\s+\w+\s+([a-zA-Z_]\w*)\s*\(/);
+    const javaFn = ln.match(/^(?:public|private|protected|static|\s)*\s+\w+\s+([a-zA-Z_]\w*)\s*\(/);
     const fnName = pyFn?.[1] || jsFn?.[1] || jsFn?.[2] || jsFn?.[3] || cppFn?.[1] || javaFn?.[1];
     if (fnName && fnName !== 'if' && fnName !== 'for' && fnName !== 'while' && fnName !== 'main') {
       result.functions.push({ name: fnName, line: lineNum });
@@ -1092,12 +1094,12 @@ function deepAnalyze(file) {
     if (/^(if|else\s+if|elif|switch)\b/.test(ln)) result.conditions.push({ line: lineNum });
 
     // Variables
-    const pyVar  = ln.match(/^([a-zA-Z_]\w*)\s*=(?!=)\s*(.+)/);
+    const pyVar = ln.match(/^([a-zA-Z_]\w*)\s*=(?!=)\s*(.+)/);
     const cppVar = ln.match(/^(?:int|float|double|string|bool|char|auto)\s+([a-zA-Z_]\w*)\s*(?:=\s*(.+))?;/);
     if (pyVar && !/^(if|else|while|for|def|class|return|import|from|pass|break|continue)/.test(ln)) {
-      result.variables.push({ name: pyVar[1], value: pyVar[2]?.trim().substring(0,30), line: lineNum });
+      result.variables.push({ name: pyVar[1], value: pyVar[2]?.trim().substring(0, 30), line: lineNum });
     }
-    if (cppVar) result.variables.push({ name: cppVar[1], value: cppVar[2]?.trim().substring(0,30), line: lineNum });
+    if (cppVar) result.variables.push({ name: cppVar[1], value: cppVar[2]?.trim().substring(0, 30), line: lineNum });
 
     // Imports
     if (/^(import|#include|using|from|require|use\s)/.test(ln)) result.imports.push({ text: ln, line: lineNum });
@@ -1130,16 +1132,16 @@ function deepAnalyze(file) {
 // ── Render Explain Panel ──────────────────────
 function renderExplainPanel(file, a) {
   const modeBlock = {
-    mentor:    `<div class="ai-mode-note mentor-note">🧑‍🏫 <strong>Mentor Mode:</strong> I'll guide your thinking, not just give answers. Ask me follow-up questions below!</div>`,
-    beginner:  `<div class="ai-mode-note beginner-note">🌱 <strong>Beginner Mode:</strong> I'll explain everything in plain, simple language. No jargon!</div>`,
+    mentor: `<div class="ai-mode-note mentor-note">🧑‍🏫 <strong>Mentor Mode:</strong> I'll guide your thinking, not just give answers. Ask me follow-up questions below!</div>`,
+    beginner: `<div class="ai-mode-note beginner-note">🌱 <strong>Beginner Mode:</strong> I'll explain everything in plain, simple language. No jargon!</div>`,
     interview: `<div class="ai-mode-note interview-note">🎯 <strong>Interview Mode:</strong> Evaluating this code the way a FAANG interviewer would.</div>`,
   }[state.aiMode] || '';
 
-  const fnList  = a.functions.length ? a.functions.map(f => `<span class="chip" style="font-family:var(--font-mono)">${f.name}()</span>`).join(' ') : '<span style="color:var(--text-muted)">None detected</span>';
-  const clsList = a.classes.length   ? a.classes.map(c => `<span class="chip" style="font-family:var(--font-mono)">${c.name}</span>`).join(' ')    : '<span style="color:var(--text-muted)">None</span>';
-  const impList = a.imports.length   ? a.imports.map(i => `<div style="font-family:var(--font-mono);font-size:11px;color:var(--accent-cyan)">${escHtml(i.text.substring(0,50))}</div>`).join('') : '<span style="color:var(--text-muted)">None</span>';
+  const fnList = a.functions.length ? a.functions.map(f => `<span class="chip" style="font-family:var(--font-mono)">${f.name}()</span>`).join(' ') : '<span style="color:var(--text-muted)">None detected</span>';
+  const clsList = a.classes.length ? a.classes.map(c => `<span class="chip" style="font-family:var(--font-mono)">${c.name}</span>`).join(' ') : '<span style="color:var(--text-muted)">None</span>';
+  const impList = a.imports.length ? a.imports.map(i => `<div style="font-family:var(--font-mono);font-size:11px;color:var(--accent-cyan)">${escHtml(i.text.substring(0, 50))}</div>`).join('') : '<span style="color:var(--text-muted)">None</span>';
 
-  const timeColor  = a.complexity.time.startsWith('O(2') ? 'var(--accent-rose)' : a.complexity.time === 'O(n²)' ? 'var(--accent-amber)' : 'var(--accent-emerald)';
+  const timeColor = a.complexity.time.startsWith('O(2') ? 'var(--accent-rose)' : a.complexity.time === 'O(n²)' ? 'var(--accent-amber)' : 'var(--accent-emerald)';
   const spaceColor = a.complexity.space === 'O(1)' ? 'var(--accent-emerald)' : 'var(--accent-amber)';
 
   const begEx = state.aiMode === 'beginner'
@@ -1172,10 +1174,10 @@ function renderExplainPanel(file, a) {
       <div class="ai-block-label">📋 Summary</div>
       <div class="ai-block-text">
         <strong style="color:var(--text-primary)">${file.lang}</strong> · ${a.lineCount} lines · ${a.charCount} chars
-        ${a.functions.length ? `· <strong style="color:var(--accent-blue)">${a.functions.length} function${a.functions.length>1?'s':''}</strong>` : ''}
-        ${a.loops.length     ? `· <strong style="color:var(--accent-cyan)">${a.loops.length} loop${a.loops.length>1?'s':''}</strong>` : ''}
-        ${a.recursion        ? `· <strong style="color:var(--accent-amber)">Recursion detected</strong>` : ''}
-        ${a.classes.length   ? `· <strong style="color:var(--accent-emerald)">${a.classes.length} class${a.classes.length>1?'es':''}</strong>` : ''}
+        ${a.functions.length ? `· <strong style="color:var(--accent-blue)">${a.functions.length} function${a.functions.length > 1 ? 's' : ''}</strong>` : ''}
+        ${a.loops.length ? `· <strong style="color:var(--accent-cyan)">${a.loops.length} loop${a.loops.length > 1 ? 's' : ''}</strong>` : ''}
+        ${a.recursion ? `· <strong style="color:var(--accent-amber)">Recursion detected</strong>` : ''}
+        ${a.classes.length ? `· <strong style="color:var(--accent-emerald)">${a.classes.length} class${a.classes.length > 1 ? 'es' : ''}</strong>` : ''}
       </div>
     </div>
 
@@ -1194,9 +1196,9 @@ function renderExplainPanel(file, a) {
         </div>
         <div style="margin-top:8px;font-size:12px;color:var(--text-muted)">
           ${a.recursion ? '⚠ Exponential time. Consider memoization or dynamic programming.' :
-            a.loops.length >= 2 ? `Nested loops detected (${a.loops.length}). Check if O(n²) is avoidable for your use case.` :
-            a.loops.length === 1 ? 'Linear pass. Good for most practical inputs.' :
-            'Constant time — no loops or recursion detected.'}
+      a.loops.length >= 2 ? `Nested loops detected (${a.loops.length}). Check if O(n²) is avoidable for your use case.` :
+        a.loops.length === 1 ? 'Linear pass. Good for most practical inputs.' :
+          'Constant time — no loops or recursion detected.'}
         </div>
       </div>
 
@@ -1250,7 +1252,7 @@ function renderExplainPanel(file, a) {
 // ── Variables Panel ───────────────────────────
 function renderVarsPanel(file) {
   const a = deepAnalyze(file);
-  const uniqueVars = a.variables.filter((v,i,arr) => arr.findIndex(x=>x.name===v.name)===i).slice(0,15);
+  const uniqueVars = a.variables.filter((v, i, arr) => arr.findIndex(x => x.name === v.name) === i).slice(0, 15);
 
   renderAiContent(`
     <div class="viz-panel">
@@ -1262,7 +1264,7 @@ function renderVarsPanel(file) {
             <tr>
               <td><span class="var-name">${v.name}</span></td>
               <td><span class="var-type-badge">${inferType(v.value)}</span></td>
-              <td style="font-family:var(--font-mono);color:var(--accent-cyan);font-size:11px">${escHtml((v.value||'—').substring(0,20))}</td>
+              <td style="font-family:var(--font-mono);color:var(--accent-cyan);font-size:11px">${escHtml((v.value || '—').substring(0, 20))}</td>
               <td style="color:var(--text-muted)">${v.line}</td>
             </tr>`).join('')}
           </tbody>
@@ -1274,8 +1276,8 @@ function renderVarsPanel(file) {
       <div class="viz-panel-title">📚 Call Stack</div>
       <div class="stack-viz">
         <div class="stack-frame"><span class="stack-frame-name">__main__</span><span class="stack-frame-line">entry</span></div>
-        ${a.functions.slice(0,3).reverse().map((f,i) => `
-          <div class="stack-frame${i===0?' active':''}">
+        ${a.functions.slice(0, 3).reverse().map((f, i) => `
+          <div class="stack-frame${i === 0 ? ' active' : ''}">
             <span class="stack-frame-name">${f.name}()</span>
             <span class="stack-frame-line">line ${f.line}</span>
           </div>`).join('')}
@@ -1285,9 +1287,9 @@ function renderVarsPanel(file) {
     <div class="viz-panel" style="margin-top:12px">
       <div class="viz-panel-title">🧩 Memory Snapshot</div>
       <div class="memory-grid">
-        ${uniqueVars.slice(0,8).map((v,i) => `
-          <div class="memory-cell${i===0?' active':' occupied'}">
-            <div class="memory-addr">0x${(0x100+i*4).toString(16).toUpperCase()}</div>
+        ${uniqueVars.slice(0, 8).map((v, i) => `
+          <div class="memory-cell${i === 0 ? ' active' : ' occupied'}">
+            <div class="memory-addr">0x${(0x100 + i * 4).toString(16).toUpperCase()}</div>
             <div class="memory-val">${escHtml(String(v.name))}</div>
           </div>`).join('')}
         <div class="memory-cell"><div class="memory-addr">…</div><div class="memory-val">—</div></div>
@@ -1303,9 +1305,9 @@ function renderVizPanel(file) {
     const analysis = deepAnalyze(file);
     const execState = {
       stepIdx: state.execIdx,
-      steps:   state.execSteps.length
-               ? state.execSteps
-               : window.Visualizer.buildExecutionTimeline(file.content, file.monacoLang, analysis),
+      steps: state.execSteps.length
+        ? state.execSteps
+        : window.Visualizer.buildExecutionTimeline(file.content, file.monacoLang, analysis),
     };
     const container = document.getElementById('ai-content');
     if (container) {
@@ -1338,8 +1340,8 @@ function renderMentorPanel() {
   if (existing) return; // Already rendered, just switch tab
 
   const intros = {
-    mentor:    `Hey! I can see you're working on <strong>${getActiveFile()?.name || 'your code'}</strong>. Before I explain anything — <strong style="color:var(--accent-glow)">what do you think this code does?</strong> Take a guess! 💡`,
-    beginner:  `Welcome! I'll make sure everything is crystal clear. <strong style="color:var(--accent-emerald)">What part of the code looks confusing?</strong> No question is too basic here 🌱`,
+    mentor: `Hey! I can see you're working on <strong>${getActiveFile()?.name || 'your code'}</strong>. Before I explain anything — <strong style="color:var(--accent-glow)">what do you think this code does?</strong> Take a guess! 💡`,
+    beginner: `Welcome! I'll make sure everything is crystal clear. <strong style="color:var(--accent-emerald)">What part of the code looks confusing?</strong> No question is too basic here 🌱`,
     interview: `Let's treat this like a FAANG interview. <strong style="color:var(--accent-amber)">Walk me through your code's approach</strong> — time complexity, data structures used, and edge cases. 🎯`,
   };
 
@@ -1418,8 +1420,8 @@ function handleMentorSend(msg) {
       let reply;
       if (window.AIEngine) {
         // Use new context-aware AI engine
-        const file     = getActiveFile();
-        const analysis = file ? deepAnalyze(file) : { functions:[], loops:[], variables:[], conditions:[], recursion:false, hasArrays:false, complexity:{time:'O(1)',space:'O(1)'}, lineCount:0 };
+        const file = getActiveFile();
+        const analysis = file ? deepAnalyze(file) : { functions: [], loops: [], variables: [], conditions: [], recursion: false, hasArrays: false, complexity: { time: 'O(1)', space: 'O(1)' }, lineCount: 0 };
         reply = window.AIEngine.generateAIResponse(
           msg,
           file,
@@ -1429,7 +1431,7 @@ function handleMentorSend(msg) {
         );
       } else {
         // Legacy fallback
-        const pool  = mentorPools[state.aiMode] || mentorPools.mentor;
+        const pool = mentorPools[state.aiMode] || mentorPools.mentor;
         reply = pool[_mentorIdx % pool.length](getActiveFile(), msg);
         _mentorIdx++;
       }
@@ -1447,7 +1449,7 @@ function handleMentorSend(msg) {
   }, state.activeAiTab !== 'mentor' ? 150 : 0);
 }
 
-const mentorInput   = document.getElementById('mentor-input');
+const mentorInput = document.getElementById('mentor-input');
 const mentorSendBtn = document.getElementById('mentor-send-btn');
 
 function doSend() {
@@ -1483,7 +1485,7 @@ document.getElementById('visualize-btn')?.addEventListener('click', () => {
   renderVizPanel(file);
   const a = deepAnalyze(file);
   state.execSteps = buildExecSteps(file, a);
-  state.execIdx   = 0;
+  state.execIdx = 0;
   renderTimeline();
   setTimeout(() => {
     const btn = document.getElementById('tl-play');
@@ -1515,39 +1517,39 @@ function buildExecSteps(file, analysis) {
     if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('//')) return;
     if (steps.length >= 20) return;
 
-    let label = `Ln ${i+1}`;
+    let label = `Ln ${i + 1}`;
     if (/^def\s/.test(trimmed) || /^function\s/.test(trimmed)) label = `Define fn`;
-    else if (/^for\s/.test(trimmed) || /^for\s*\(/.test(trimmed))   label = `Loop start`;
-    else if (/^while\s/.test(trimmed))                               label = `While loop`;
-    else if (/^if\s/.test(trimmed) || /^if\s*\(/.test(trimmed))     label = `Condition`;
-    else if (/^return\s/.test(trimmed))                              label = `Return`;
-    else if (/=(?!=)/.test(trimmed))                                 label = `Assign`;
-    else if (/print\(|cout|printf/.test(trimmed))                    label = `Output`;
+    else if (/^for\s/.test(trimmed) || /^for\s*\(/.test(trimmed)) label = `Loop start`;
+    else if (/^while\s/.test(trimmed)) label = `While loop`;
+    else if (/^if\s/.test(trimmed) || /^if\s*\(/.test(trimmed)) label = `Condition`;
+    else if (/^return\s/.test(trimmed)) label = `Return`;
+    else if (/=(?!=)/.test(trimmed)) label = `Assign`;
+    else if (/print\(|cout|printf/.test(trimmed)) label = `Output`;
 
-    steps.push({ lineNum: i + 1, code: trimmed.substring(0,30), label });
+    steps.push({ lineNum: i + 1, code: trimmed.substring(0, 30), label });
   });
 
   return steps.length ? steps : [{ lineNum: 1, code: '(empty)', label: 'No steps' }];
 }
 
 function resetTimeline() {
-  state.execSteps  = [];
-  state.execIdx    = 0;
-  state.execPlaying= false;
+  state.execSteps = [];
+  state.execIdx = 0;
+  state.execPlaying = false;
   clearInterval(state.execTimer);
   renderTimeline();
 }
 
 function renderTimeline() {
   const progress = document.getElementById('timeline-progress');
-  const label    = document.getElementById('tl-step-label');
-  const stepsEl  = document.getElementById('timeline-steps');
-  const total    = state.execSteps.length;
-  const idx      = state.execIdx;
+  const label = document.getElementById('tl-step-label');
+  const stepsEl = document.getElementById('timeline-steps');
+  const total = state.execSteps.length;
+  const idx = state.execIdx;
 
   const pct = total > 0 ? ((idx + 1) / total) * 100 : 0;
   if (progress) progress.style.width = `${pct}%`;
-  if (label)    label.textContent    = total > 0 ? `Step ${idx + 1} / ${total}` : 'No steps';
+  if (label) label.textContent = total > 0 ? `Step ${idx + 1} / ${total}` : 'No steps';
 
   if (stepsEl) {
     stepsEl.innerHTML = state.execSteps.map((s, i) =>
@@ -1585,7 +1587,7 @@ document.getElementById('tl-prev')?.addEventListener('click', () => {
 document.getElementById('tl-next')?.addEventListener('click', () => {
   if (state.execIdx < state.execSteps.length - 1) { state.execIdx++; renderTimeline(); }
 });
-document.getElementById('tl-play')?.addEventListener('click', function() {
+document.getElementById('tl-play')?.addEventListener('click', function () {
   state.execPlaying = !state.execPlaying;
   this.innerHTML = state.execPlaying ? '⏸ Pause' : '▶ Run';
   if (state.execPlaying) {
@@ -1617,18 +1619,18 @@ document.getElementById('timeline-track')?.addEventListener('click', e => {
 // COMMAND PALETTE
 // ══════════════════════════════════════════════
 const COMMANDS = [
-  { icon:'📄', label:'New File',              sub:'Create a new file (Ctrl+N)',         action: openNewFileDialog,                        kbd:['Ctrl','N'] },
-  { icon:'💾', label:'Save All',              sub:'Save all open files (Ctrl+S)',        action: saveAll,                                  kbd:['Ctrl','S'] },
-  { icon:'🧠', label:'Analyze Code',          sub:'Run AI analysis on current file',    action: () => document.getElementById('run-analysis-btn')?.click(), kbd:['Ctrl','A'] },
-  { icon:'▶',  label:'Visualize',             sub:'Start visual execution (Ctrl+R)',     action: () => document.getElementById('visualize-btn')?.click(),     kbd:['Ctrl','R'] },
-  { icon:'⊟',  label:'Toggle Terminal',       sub:'Show/hide the terminal panel',       action: toggleTerminal,                           kbd:['Ctrl','`'] },
-  { icon:'💬', label:'Open Mentor Chat',      sub:'Ask your AI programming mentor',     action: () => { switchAiTab('mentor'); renderMentorPanel(); }         },
-  { icon:'📊', label:'Show Variables',        sub:'View variable state panel',          action: () => { const f=getActiveFile(); if(f){switchAiTab('vars'); renderVarsPanel(f);} } },
-  { icon:'🌱', label:'Beginner Mode',         sub:'AI explains in plain English',       action: () => document.getElementById('mode-beginner')?.click()       },
-  { icon:'🎯', label:'Interview Mode',        sub:'FAANG-style AI coaching',            action: () => document.getElementById('mode-interview')?.click()      },
-  { icon:'🏠', label:'Go to Landing Page',    sub:'Return to CodeLens homepage',        action: () => { window.location.href='index.html'; }                   },
-  { icon:'⬜', label:'Clear Editor',          sub:'Clear current file content',         action: () => document.getElementById('editor-clear-btn')?.click()    },
-  { icon:'↺',  label:'Reset Timeline',        sub:'Reset execution timeline',           action: resetTimeline                                                  },
+  { icon: '📄', label: 'New File', sub: 'Create a new file (Ctrl+N)', action: openNewFileDialog, kbd: ['Ctrl', 'N'] },
+  { icon: '💾', label: 'Save All', sub: 'Save all open files (Ctrl+S)', action: saveAll, kbd: ['Ctrl', 'S'] },
+  { icon: '🧠', label: 'Analyze Code', sub: 'Run AI analysis on current file', action: () => document.getElementById('run-analysis-btn')?.click(), kbd: ['Ctrl', 'A'] },
+  { icon: '▶', label: 'Visualize', sub: 'Start visual execution (Ctrl+R)', action: () => document.getElementById('visualize-btn')?.click(), kbd: ['Ctrl', 'R'] },
+  { icon: '⊟', label: 'Toggle Terminal', sub: 'Show/hide the terminal panel', action: toggleTerminal, kbd: ['Ctrl', '`'] },
+  { icon: '💬', label: 'Open Mentor Chat', sub: 'Ask your AI programming mentor', action: () => { switchAiTab('mentor'); renderMentorPanel(); } },
+  { icon: '📊', label: 'Show Variables', sub: 'View variable state panel', action: () => { const f = getActiveFile(); if (f) { switchAiTab('vars'); renderVarsPanel(f); } } },
+  { icon: '🌱', label: 'Beginner Mode', sub: 'AI explains in plain English', action: () => document.getElementById('mode-beginner')?.click() },
+  { icon: '🎯', label: 'Interview Mode', sub: 'FAANG-style AI coaching', action: () => document.getElementById('mode-interview')?.click() },
+  { icon: '🏠', label: 'Go to Landing Page', sub: 'Return to CodeLens homepage', action: () => { window.location.href = 'index.html'; } },
+  { icon: '⬜', label: 'Clear Editor', sub: 'Clear current file content', action: () => document.getElementById('editor-clear-btn')?.click() },
+  { icon: '↺', label: 'Reset Timeline', sub: 'Reset execution timeline', action: resetTimeline },
 ];
 
 let _cmdIdx = 0, _cmdFiltered = [...COMMANDS];
@@ -1648,23 +1650,23 @@ function renderCmds(q) {
   const el = document.getElementById('cmd-results');
   if (!el) return;
   if (!_cmdFiltered.length) { el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">No commands found</div>'; return; }
-  el.innerHTML = _cmdFiltered.map((c,i) => `
-    <div class="cmd-item${i===_cmdIdx?' selected':''}" data-i="${i}" role="option">
+  el.innerHTML = _cmdFiltered.map((c, i) => `
+    <div class="cmd-item${i === _cmdIdx ? ' selected' : ''}" data-i="${i}" role="option">
       <div class="cmd-item-icon">${c.icon}</div>
       <div style="flex:1"><div class="cmd-item-label">${c.label}</div><div class="cmd-item-sub">${c.sub}</div></div>
-      ${c.kbd ? `<div class="cmd-item-kbd">${c.kbd.map(k=>`<span class="kbd">${k}</span>`).join('')}</div>` : ''}
+      ${c.kbd ? `<div class="cmd-item-kbd">${c.kbd.map(k => `<span class="kbd">${k}</span>`).join('')}</div>` : ''}
     </div>`).join('');
   el.querySelectorAll('.cmd-item').forEach(item => item.addEventListener('click', () => { closeCmdPalette(); setTimeout(() => _cmdFiltered[parseInt(item.dataset.i)]?.action(), 50); }));
 }
 
-document.getElementById('cmd-input')?.addEventListener('input', e => { _cmdIdx=0; renderCmds(e.target.value); });
+document.getElementById('cmd-input')?.addEventListener('input', e => { _cmdIdx = 0; renderCmds(e.target.value); });
 document.getElementById('cmd-input')?.addEventListener('keydown', e => {
-  if (e.key==='ArrowDown')  { e.preventDefault(); _cmdIdx=Math.min(_cmdIdx+1,_cmdFiltered.length-1); renderCmds(document.getElementById('cmd-input').value); }
-  if (e.key==='ArrowUp')    { e.preventDefault(); _cmdIdx=Math.max(_cmdIdx-1,0);                      renderCmds(document.getElementById('cmd-input').value); }
-  if (e.key==='Enter')      { closeCmdPalette(); setTimeout(() => _cmdFiltered[_cmdIdx]?.action(), 50); }
-  if (e.key==='Escape')     { closeCmdPalette(); }
+  if (e.key === 'ArrowDown') { e.preventDefault(); _cmdIdx = Math.min(_cmdIdx + 1, _cmdFiltered.length - 1); renderCmds(document.getElementById('cmd-input').value); }
+  if (e.key === 'ArrowUp') { e.preventDefault(); _cmdIdx = Math.max(_cmdIdx - 1, 0); renderCmds(document.getElementById('cmd-input').value); }
+  if (e.key === 'Enter') { closeCmdPalette(); setTimeout(() => _cmdFiltered[_cmdIdx]?.action(), 50); }
+  if (e.key === 'Escape') { closeCmdPalette(); }
 });
-document.getElementById('cmd-overlay')?.addEventListener('click', e => { if (e.target===e.currentTarget) closeCmdPalette(); });
+document.getElementById('cmd-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCmdPalette(); });
 document.getElementById('cmd-palette-btn')?.addEventListener('click', openCmdPalette);
 
 // ══════════════════════════════════════════════
@@ -1676,7 +1678,7 @@ document.querySelectorAll('.rail-btn[data-panel]').forEach(btn => {
     btn.classList.add('active');
     const file = getActiveFile();
     const panel = btn.dataset.panel;
-    if (panel === 'viz')    { if (file) { switchAiTab('viz');    renderVizPanel(file); } }
+    if (panel === 'viz') { if (file) { switchAiTab('viz'); renderVizPanel(file); } }
     if (panel === 'mentor') { switchAiTab('mentor'); renderMentorPanel(); }
   });
 });
@@ -1708,14 +1710,14 @@ document.addEventListener('keydown', e => {
   if (mod && e.key === '`') { e.preventDefault(); toggleTerminal(); }
   if (e.key === 'Escape') { closeCmdPalette(); closeNewFileDialog(); closeRenameDialog(); }
   if (e.altKey && e.key === 'ArrowRight') document.getElementById('tl-next')?.click();
-  if (e.altKey && e.key === 'ArrowLeft')  document.getElementById('tl-prev')?.click();
+  if (e.altKey && e.key === 'ArrowLeft') document.getElementById('tl-prev')?.click();
 });
 
 // ══════════════════════════════════════════════
 // HELPERS
 // ══════════════════════════════════════════════
 function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function inferType(val) {
@@ -1725,7 +1727,7 @@ function inferType(val) {
   if (/^["']/.test(val)) return 'str';
   if (/^\[/.test(val)) return 'list';
   if (/^\{/.test(val)) return 'dict';
-  if (val==='True'||val==='False'||val==='true'||val==='false') return 'bool';
+  if (val === 'True' || val === 'False' || val === 'true' || val === 'false') return 'bool';
   return 'auto';
 }
 
