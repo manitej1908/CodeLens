@@ -8,17 +8,17 @@
 require('dotenv').config();
 
 const express = require('express');
-const cors    = require('cors');
-const path    = require('path');
-const fs      = require('fs');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
 
 const explainRouter = require('./routes/explain');
-const mentorRouter  = require('./routes/mentor');
-const runRouter     = require('./routes/run');
-const saveRouter    = require('./routes/save');
-const errorHandler  = require('./middleware/errorHandler');
+const mentorRouter = require('./routes/mentor');
+const runRouter = require('./routes/run');
+const saveRouter = require('./routes/save');
+const errorHandler = require('./middleware/errorHandler');
 
-const app  = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ── Ensure data/ directory exists ────────────────────────
@@ -28,10 +28,15 @@ if (!fs.existsSync(SAVE_DIR)) {
 }
 
 // ── CORS ─────────────────────────────────────────────────
+// ── CORS ─────────────────────────────────────────────────
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map(o => o.trim())
   .filter(Boolean);
+
+console.log("RAW ALLOWED_ORIGINS:", process.env.ALLOWED_ORIGINS);
+console.log("PARSED ALLOWED_ORIGINS:", allowedOrigins);
+
 
 app.use(cors({
   origin: (origin, cb) => {
@@ -52,9 +57,9 @@ app.use(express.static(path.join(__dirname, '../client')));
 
 // ── API routes ────────────────────────────────────────────
 app.use('/api/explain', explainRouter);
-app.use('/api/mentor',  mentorRouter);
-app.use('/api/run',     runRouter);
-app.use('/api/save',    saveRouter);
+app.use('/api/mentor', mentorRouter);
+app.use('/api/run', runRouter);
+app.use('/api/save', saveRouter);
 
 // ── Health check ──────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
