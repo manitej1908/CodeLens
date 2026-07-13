@@ -39,20 +39,8 @@ console.log("RAW ALLOWED_ORIGINS =", process.env.ALLOWED_ORIGINS);
 console.log("PARSED ALLOWED_ORIGINS =", JSON.stringify(allowedOrigins));
 
 app.use(cors({
-  origin: (origin, cb) => {
-    console.log("REQUEST ORIGIN =", JSON.stringify(origin));
-    console.log("ALLOWED ORIGINS =", JSON.stringify(allowedOrigins));
-
-    if (!origin || allowedOrigins.includes(origin)) {
-      console.log("✅ ALLOWED");
-      return cb(null, true);
-    }
-
-    console.log("❌ BLOCKED");
-    cb(new Error(`CORS: origin "${origin}" not allowed`));
-  },
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: true,
+  credentials: true,
 }));
 
 
