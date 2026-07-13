@@ -29,24 +29,32 @@ if (!fs.existsSync(SAVE_DIR)) {
 
 // ── CORS ─────────────────────────────────────────────────
 // ── CORS ─────────────────────────────────────────────────
+// ── CORS ─────────────────────────────────────────────────
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map(o => o.trim())
   .filter(Boolean);
 
-console.log("RAW ALLOWED_ORIGINS:", process.env.ALLOWED_ORIGINS);
-console.log("PARSED ALLOWED_ORIGINS:", allowedOrigins);
-
+console.log("RAW ALLOWED_ORIGINS =", process.env.ALLOWED_ORIGINS);
+console.log("PARSED ALLOWED_ORIGINS =", JSON.stringify(allowedOrigins));
 
 app.use(cors({
   origin: (origin, cb) => {
-    // Allow same-origin requests (no Origin header) and listed origins
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    console.log("REQUEST ORIGIN =", JSON.stringify(origin));
+    console.log("ALLOWED ORIGINS =", JSON.stringify(allowedOrigins));
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      console.log("✅ ALLOWED");
+      return cb(null, true);
+    }
+
+    console.log("❌ BLOCKED");
     cb(new Error(`CORS: origin "${origin}" not allowed`));
   },
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
 
 // ── Body parsing ─────────────────────────────────────────
 app.use(express.json({ limit: '1mb' }));
