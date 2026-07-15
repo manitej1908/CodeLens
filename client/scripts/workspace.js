@@ -12,8 +12,14 @@ const STORAGE_KEY = 'codelens_workspace_v2';
 const AUTOSAVE_DELAY = 1000; // ms
 
 // ── Backend API base URL ────────────────────────────────────
-// Uses relative path — works whether served via Express or opened directly.
-const API_BASE = '';
+// On Vercel (deployed frontend), route all /api calls to the Render backend.
+// On file:// (local dev without Express), use localhost.
+// When served by Express locally, use relative path '' so Express handles it.
+const API_BASE = (() => {
+  if (window.location.protocol === 'file:') return 'http://localhost:3000';
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return '';
+  return 'https://codelens-vb6o.onrender.com';
+})();
 
 // ── Session ID for server-side saves ────────────────────────
 let _sessionId = localStorage.getItem('codelens_session_id') || null;

@@ -582,7 +582,11 @@ function inferTypeFromValue(val) {
  * @returns {Promise<string>} HTML string for mentor bubble
  */
 async function sendMentorMessage(question, file, analysis, aiMode, history) {
-  const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:3000' : 'https://codelens-vb6o.onrender.com';
+  const API_BASE = (() => {
+    if (window.location.protocol === 'file:') return 'http://localhost:3000';
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return '';
+    return 'https://codelens-vb6o.onrender.com';
+  })();
 
   try {
     const res = await fetch(`${API_BASE}/api/mentor`, {
