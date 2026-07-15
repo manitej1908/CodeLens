@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeLens Project Report — Comprehensive Engineering & PBL Guide</title>
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --bg: #ffffff;
+    --bg-alt: #f8fafc;
+    --border: #e2e8f0;
+    --code-bg: #0f172a;
+    --code-text: #f1f5f9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.65;
+    font-size: 15px;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  /* Floating Print Button */
+  .print-bar {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #0f172a;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 9999px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1000;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .print-bar:hover {
+    background: var(--primary);
+    transform: translateY(-2px);
+  }
+  /* Cover Page */
+  .cover {
+    padding: 80px 40px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    color: #fff;
+    border-radius: 16px;
+    margin-bottom: 60px;
+    box-shadow: 0 20px 40px -15px rgba(0,0,0,0.2);
+  }
+  .cover h1 {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #fff, #a5b4fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cover p.subtitle {
+    font-size: 20px;
+    color: #c7d2fe;
+    margin-bottom: 40px;
+    max-width: 700px;
+  }
+  .cover-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 30px;
+  }
+  .cover-meta div label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #818cf8;
+    margin-bottom: 4px;
+  }
+  .cover-meta div span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+  }
+  /* Typography */
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 60px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-top: 36px;
+    margin-bottom: 12px;
+  }
+  h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+  p, ul, ol { margin-bottom: 16px; }
+  ul, ol { padding-left: 24px; }
+  li { margin-bottom: 8px; }
+  /* Code Blocks */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 20px;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin: 20px 0;
+    border: 1px solid #334155;
+  }
+  code {
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+  pre code { background: transparent; color: inherit; padding: 0; }
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: var(--bg-alt);
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 14px;
+  }
+  tr:last-child td { border-bottom: none; }
+  /* Callout Boxes */
+  .callout {
+    background: #eff6ff;
+    border-left: 4px solid var(--primary);
+    padding: 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 24px 0;
+  }
+  .callout h4 { color: var(--primary-dark); margin-top: 0; }
+  /* Architecture Diagram Box */
+  .diag-box {
+    background: #0f172a;
+    color: #38bdf8;
+    padding: 24px;
+    border-radius: 12px;
+    font-family: monospace;
+    font-size: 13px;
+    white-space: pre;
+    overflow-x: auto;
+    line-height: 1.4;
+    margin: 24px 0;
+    border: 1px solid #1e293b;
+  }
+  /* TOC */
+  .toc {
+    background: var(--bg-alt);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .toc h3 { margin-top: 0; margin-bottom: 16px; color: #0f172a; }
+  .toc ul { list-style: none; padding-left: 0; margin-bottom: 0; }
+  .toc li { margin-bottom: 10px; }
+  .toc a {
+    color: var(--primary-dark);
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+  }
+  .toc a:hover { text-decoration: underline; }
+  /* Print Styles */
+  @media print {
+    body { background: #fff; font-size: 12pt; color: #000; }
+    .container { max-width: 100%; padding: 0; margin: 0; }
+    .print-bar { display: none !important; }
+    .cover {
+      background: #0f172a !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      padding: 60px 30px;
+      margin-bottom: 40px;
+      page-break-after: always;
+    }
+    h2 { page-break-before: always; margin-top: 30px; }
+    pre, .diag-box, table, .callout {
+      page-break-inside: avoid;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating Print Button -->
+<div class="print-bar" onclick="window.print()">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+  Save as PDF / Print Report
+</div>
+
+<div class="container">
+
+  <!-- Cover Page -->
+  <div class="cover">
+    <h1>CodeLens: Complete Engineering & Project-Based Learning Report</h1>
+    <p class="subtitle">An Advanced AI-Powered Multi-Language Online Code Editor, Sandboxed Subprocess Compiler, and Educational Debugging Engine</p>
+    <div class="cover-meta">
+      <div>
+        <label>System Topology</label>
+        <span>Vercel + Render Docker + Groq AI</span>
+      </div>
+      <div>
+        <label>Supported Runtimes</label>
+        <span>Python · C++ · C · Java · Node.js</span>
+      </div>
+      <div>
+        <label>AI Architecture</label>
+        <span>Llama-3.3-70B Versatile (Groq SDK)</span>
+      </div>
+      <div>
+        <label>Document Purpose</label>
+        <span>Academic Capstone & PBL Guide</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ul>
+      <li><a href="#section-1"><span>1. Executive Summary & Educational Objectives</span> <span>Page 2</span></a></li>
+      <li><a href="#section-2"><span>2. End-to-End System Architecture & Data Flow</span> <span>Page 3</span></a></li>
+      <li><a href="#section-3"><span>3. Frontend Engineering: Virtual Workspace & Monaco Editor</span> <span>Page 4</span></a></li>
+      <li><a href="#section-4"><span>4. Backend Engineering: Sandboxed Multi-Language Execution Engine</span> <span>Page 6</span></a></li>
+      <li><a href="#section-5"><span>5. Error Sanitization & Structured Diagnostic Pipeline</span> <span>Page 8</span></a></li>
+      <li><a href="#section-6"><span>6. AI Integration Engine: Groq Llama-3.3-70B Versatile</span> <span>Page 10</span></a></li>
+      <li><a href="#section-7"><span>7. Cloud Persistence & Session-Based Storage Architecture</span> <span>Page 12</span></a></li>
+      <li><a href="#section-8"><span>8. DevOps & Cloud Deployment: Dockerization, Vercel & Render</span> <span>Page 13</span></a></li>
+      <li><a href="#section-9"><span>9. Project-Based Learning (PBL) Study Guide & Student Exercises</span> <span>Page 15</span></a></li>
+    </ul>
+  </div>
+
+  <!-- Section 1 -->
+  <h2 id="section-1">1. Executive Summary & Educational Objectives</h2>
+  <p><strong>CodeLens</strong> is a state-of-the-art, web-based Integrated Development Environment (IDE) designed to bridge the gap between traditional online code runners and advanced AI coding assistants. Unlike simple web run-boxes that merely echo raw terminal output, CodeLens provides a deeply structured, highly visual, and educational coding experience. It empowers software engineering students, educators, and developers to write, compile, execute, debug, and understand code across five major programming languages (<strong>Python, C++, C, Java, and JavaScript</strong>) inside a secure, sandboxed cloud runtime.</p>
+  
+  <div class="callout">
+    <h4>Why Study This Project for Project-Based Learning (PBL)?</h4>
+    <p>Building an online IDE from scratch touches every critical layer of modern full-stack systems engineering:</p>
+    <ul>
+      <li><strong>Frontend Virtualization & AMD Module Loading:</strong> Integrating industry-standard editor engines (<code>monaco-editor</code> used by VS Code) without heavy bundlers.</li>
+      <li><strong>Subprocess & OS Execution Management:</strong> Safely spawning child processes (`child_process.spawn`) to invoke native system compilers (`gcc`, `g++`, `javac`) and interpreters while enforcing execution timeouts.</li>
+      <li><strong>Complex Regular Expression Error Parsing:</strong> Translating cryptic compiler stack traces into human-readable line numbers, column numbers, and actionable educational suggestions.</li>
+      <li><strong>Large Language Model (LLM) Systems Engineering:</strong> Designing strict system prompts that force LLMs (`llama-3.3-70b-versatile` via Groq) to output reliable, deeply structured JSON UI payloads.</li>
+      <li><strong>Containerization & Cloud Infrastructure:</strong> Using Docker to encapsulate multi-language toolchains (`OpenJDK 17`, `GCC`, `Python 3`, `Node.js`) into reproducible, cloud-agnostic deployment units.</li>
+    </ul>
+  </div>
+
+  <!-- Section 2 -->
+  <h2 id="section-2">2. End-to-End System Architecture & Data Flow</h2>
+  <p>CodeLens operates on a decoupled, stateless client-server topology where the frontend acts as a responsive virtual file system and editor, while the backend serves as a secure compute and AI proxy engine.</p>
+
+  <div class="diag-box">+-----------------------------------------------------------------------------------+
+|                              CLIENT TIER (Browser / Vercel)                       |
+|  +---------------------+  +----------------------+  +--------------------------+  |
+|  |   Monaco Editor     |  | Virtual File System  |  |  Terminal & AI Panels    |  |
+|  |  (Code Highlighting |  |  (state.files +      |  |  (Collapsible Cards,     |  |
+|  |   & Autocomplete)   |  |   localStorage sync) |  |   Structured AI Output)  |  |
+|  +----------+----------+  +----------+-----------+  +-------------+------------+  |
++-------------|------------------------|----------------------------|---------------+
+              |                        |                            |
+              | [POST /api/run]        | [POST /api/save]           | [POST /api/explain]
+              | {code, lang, stdin}    | {files, sessionId}         | [POST /api/mentor]
+              v                        v                            v
++-----------------------------------------------------------------------------------+
+|                        BACKEND TIER (Express.js / Render Docker)                  |
+|  +-----------------------------------------------------------------------------+  |
+|  |                           Express.js Router Middleware                      |  |
+|  |                 (CORS, Body-Parser 50MB limit, Error Trapping)              |  |
+|  +---------------------+---------------------+---------------------------------+  |
+|                        |                     |                                    |
+|         +--------------v--------------+      +-----------------v---------------+  |
+|         |   Multi-Language Execution  |      |         Groq AI Proxy           |  |
+|         |      (runRouter - run.js)   |      |  (explain.js & mentor.js routes)|  |
+|         +--------------+--------------+      +-----------------+---------------+  |
+|                        |                                       |                  |
+|         +--------------v--------------+                        |                  |
+|         |  OS Temporary Sandbox Dir   |                        | [Secure API Call]|
+|         |   (/tmp/codelens_run_xxxx)  |                        | (Never Exposed   |
+|         +--------------+--------------+                        |  to Client)      |
+|                        |                                       v                  |
+|      +-----------------+-----------------+            +------------------------+  |
+|      |                 |                 |            |   Groq Cloud API       |  |
+|      v                 v                 v            | (Llama-3.3-70B Model)  |  |
+|  [python3]         [gcc/g++]      [javac + java]      +------------------------+  |
+|  (main.py)         (main.cpp)      (Main.java)                                    |
++-----------------------------------------------------------------------------------+</div>
+
+  <!-- Section 3 -->
+  <h2 id="section-3">3. Frontend Engineering: Virtual Workspace & Monaco Editor</h2>
+  <p>The client application (`client/scripts/workspace.js`) is structured around a central reactive state object that manages files, editor models, and active AI modes without requiring external UI frameworks like React or Vue.</p>
+
+  <h3>3.1 Monaco Editor Initialization & Custom Dark Theme</h3>
+  <p>VS Code’s core editor engine is loaded via AMD Loader (<code>require(['vs/editor/editor.main'])</code>). CodeLens defines and registers a custom, high-contrast dark theme (<code>codelens-dark</code>) optimized for readability:</p>
+
+<pre><code>monaco.editor.defineTheme('codelens-dark', {
+  base: 'vs-dark',
+  inherit: true,
+  rules: [
+    { token: 'comment',     foreground: '546e7a', fontStyle: 'italic' },
+    { token: 'keyword',     foreground: 'c792ea', fontStyle: 'bold' },
+    { token: 'string',      foreground: 'c3e88d' },
+    { token: 'number',      foreground: 'f78c6c' },
+    { token: 'function',    foreground: '82aaff' },
+    { token: 'variable',    foreground: 'f07178' },
+  ],
+  colors: {
+    'editor.background': '#080b14',
+    'editorLineNumber.activeForeground': '#7c6ee8',
+    'editorCursor.foreground': '#7c6ee8',
+    'editor.selectionBackground': '#7c6ee840',
+  }
+});</code></pre>
+
+  <h3>3.2 Virtual File System & Tab Buffer Management</h3>
+  <p>To support instant, zero-lag tab switching, each open file maintains its own isolated <code>monaco.editor.ITextModel</code> inside the <code>monacoModels</code> map. When a user switches tabs, CodeLens invokes <code>monacoEditor.setModel(monacoModels[file.id])</code> along with restoring exact scroll view states (<code>monacoViewStates[id]</code>).</p>
+
+  <!-- Section 4 -->
+  <h2 id="section-4">4. Backend Engineering: Sandboxed Multi-Language Execution Engine</h2>
+  <p>The execution engine (<code>server/routes/run.js</code>) is the core technical powerhouse of CodeLens. When a request arrives at <code>POST /api/run</code>, the server executes a strict, atomic 5-step lifecycle:</p>
+
+  <ol>
+    <li><strong>Temporary Sandbox Creation:</strong> Creates an atomic, guaranteed-unique directory using <code>fs.promises.mkdtemp(path.join(os.tmpdir(), 'codelens_run_'))</code> to prevent file collisions between concurrent users.</li>
+    <li><strong>Code Serialization:</strong> Writes the incoming code payload to disk (`Main.java`, `main.cpp`, `main.py`, or `main.js`).</li>
+    <li><strong>Compilation Step (Java & C++ / C):</strong> Invokes native system compilers (`javac` or `g++`) with strict 10-second timeouts. If compilation fails, output is parsed immediately without running the executable.</li>
+    <li><strong>Subprocess Execution:</strong> Spawns the compiled binary or interpreter (`java -cp tmpDir Main`, `python3 main.py`, or `./a.out`), pipes user <code>stdin</code> into the child process, and enforces an absolute execution timeout (<code>EXEC_TIMEOUT_MS = 10,000 ms</code>).</li>
+    <li><strong>Resource Cleanup:</strong> Inside a strict <code>try/finally</code> block, recursively deletes the temporary directory (`rm(tmpDir, { recursive: true, force: true })`) to ensure zero disk leaks.</li>
+  </ol>
+
+  <h3>4.1 Java (`Main.java`) Execution Pipeline</h3>
+<pre><code>// Step 1: Compile using javac
+const compRes = await runCommand('javac', [codePath], { cwd: tmpDir, timeout: 10000 });
+
+if (compRes.err || compRes.stderr) {
+  // Parse and return exact compilation error structure
+  const proc = processError(compRes.stderr || compRes.stdout, code, true, 'java');
+  return res.json({ errorType: 'compile', message: proc.structured.message, ... });
+}
+
+// Step 2: Execute using java with classpath pointing to temporary sandbox
+const runRes = await runCommand('java', ['-cp', tmpDir, 'Main'], {
+  cwd: tmpDir,
+  timeout: EXEC_TIMEOUT_MS,
+  input: stdin || ''
+});</code></pre>
+
+  <!-- Section 5 -->
+  <h2 id="section-5">5. Error Sanitization & Structured Diagnostic Pipeline</h2>
+  <p>One of the most complex engineering feats in CodeLens is translating cryptic compiler stack traces into clean, structured educational feedback.</p>
+
+  <h3>5.1 Path Stripping & Compiler Noise Reduction</h3>
+<pre><code>// Strip absolute Windows and Unix paths down to only the filename
+sanitized = sanitized.replace(/[a-zA-Z]:\\[^\s:*?"<>|]*\\(Main\.java|main\.(?:cpp|c|py|js))/gi, '$1');
+sanitized = sanitized.replace(/\/[^\s:*?"<>|]*\/(Main\.java|main\.(?:cpp|c|py|js))/gi, '$1');
+
+// Filter out internal compiler stack noise not pointing to the user's file
+lines = lines.filter(line => {
+  const l = line.toLowerCase();
+  if (l.includes('mingw') || l.includes('bits/stdc++.h')) return false;
+  if ((l.includes('note:') || l.includes('here')) && !l.includes('main.') && !l.includes('Main.java')) return false;
+  return true;
+});</code></pre>
+
+  <h3>5.2 Language-Specific Diagnostic Extraction & Socratic Suggestions</h3>
+  <p><code>processError()</code> parses sanitized output with language regexes to extract <strong>Line Number</strong>, <strong>Column Number</strong>, <strong>Message</strong>, and generates educational debugging suggestions automatically:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Language / Error Type</th>
+        <th>Example Raw Error Output</th>
+        <th>Automated Educational Suggestion (`suggestion`)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Java Compile Error</strong></td>
+        <td><code>Main.java:5: error: cannot find symbol</code></td>
+        <td>Check variable/method names or verify necessary 'import' statements are included.</td>
+      </tr>
+      <tr>
+        <td><strong>Java Runtime Exception</strong></td>
+        <td><code>java.lang.ArrayIndexOutOfBoundsException: Index 5</code></td>
+        <td>Check loop boundaries and array index access to ensure they are within [0, array.length - 1].</td>
+      </tr>
+      <tr>
+        <td><strong>C++ Undeclared Identifier</strong></td>
+        <td><code>error: 'cout' was not declared in this scope</code></td>
+        <td>Did you forget:<br><code>using namespace std;</code><br>or<br><code>std::cout ?</code></td>
+      </tr>
+      <tr>
+        <td><strong>Python Syntax / Exception</strong></td>
+        <td><code>ZeroDivisionError: division by zero</code></td>
+        <td>Attempted to divide a number by zero. Check your denominator logic.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Section 6 -->
+  <h2 id="section-6">6. AI Integration Engine: Groq Llama-3.3-70B Versatile</h2>
+  <p>CodeLens incorporates generative AI (`llama-3.3-70b-versatile`) as an automated code reviewer that returns strict, UI-parseable JSON structures.</p>
+
+  <h3>6.1 The AI Explain Schema (`POST /api/explain`)</h3>
+  <p>The backend prompts Llama-3.3 with a comprehensive 13-section JSON schema requirement. When received, the frontend renders each section into collapsible, interactive UI cards:</p>
+  <ul>
+    <li><strong>Summary & Output:</strong> High-level program purpose and predicted console output.</li>
+    <li><strong>Line-by-Line Breakdown:</strong> An array of objects explaining every line of the user's code individually.</li>
+    <li><strong>Variables & Functions Table:</strong> Complete symbol table with data types and functional purposes.</li>
+    <li><strong>Algorithm & Complexity Analysis:</strong> Big-O Time (`timeComplexity`) and Space (`spaceComplexity`) evaluation.</li>
+    <li><strong>Dry Run & Common Mistakes:</strong> Step-by-step execution trace and typical pitfalls for students.</li>
+    <li><strong>Socratic Suggestions & Better Approach:</strong> Proactive code review recommending industry best practices.</li>
+    <li><strong>Related Concepts & Interview Questions:</strong> Top technical interview questions tailored to the submitted code.</li>
+  </ul>
+
+  <!-- Section 7 -->
+  <h2 id="section-7">7. Cloud Persistence & Session-Based Storage Architecture</h2>
+  <p>To allow students to save workspaces across sessions without requiring database login barriers, CodeLens uses a session UUID file storage architecture (`server/routes/save.js`).</p>
+
+  <div class="diag-box">[Frontend localStorage]                      [Backend Server File System]
++--------------------------+                 +----------------------------+
+| 'codelens_session_id'    | --(UUIDv4)----> | /data/011e7d27-d0ea-...json|
+| '011e7d27-d0ea-4bd5...'  |                 | [ { name: "Main.java",     |
++--------------------------+                 |     content: "public..." } |
+                                             | ]                          |
+                                             +----------------------------+</div>
+
+  <!-- Section 8 -->
+  <h2 id="section-8">8. DevOps & Cloud Deployment: Dockerization, Vercel & Render</h2>
+  <p>When deploying multi-language code executors to cloud infrastructure, standard Node runtimes lack JDK and C++ tooling. By containerizing CodeLens with a custom <code>Dockerfile</code> based on Debian 12 Bookworm (`node:20-bookworm`), we guarantee identical execution environments across local laptops and production cloud servers:</p>
+
+<pre><code># Use official Node.js 20 on Debian Bookworm
+FROM node:20-bookworm
+
+# Install OpenJDK 17 (java + javac), Python 3, and build-essential (gcc + g++)
+RUN apt-get update && apt-get install -y \
+    openjdk-17-jdk \
+    python3 \
+    python3-pip \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --production
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]</code></pre>
+
+  <!-- Section 9 -->
+  <h2 id="section-9">9. Project-Based Learning (PBL) Study Guide & Student Exercises</h2>
+  <p>To verify your technical understanding of the CodeLens codebase, complete these practical capstone exercises:</p>
+
+  <ol>
+    <li><strong>Add Rust (`rustc`) Support:</strong> Update `Dockerfile` to include `rustc`. Add `.rs` compilation and execution handling to `server/routes/run.js` (`rustc main.rs -o main && ./main`).</li>
+    <li><strong>Implement Real-Time WebSocket Streaming:</strong> Replace the REST `POST /api/run` request with `socket.io` to stream `child.stdout` in real-time as long-running programs execute.</li>
+    <li><strong>Add Relational Database Persistence (PostgreSQL / SQLite):</strong> Replace the UUID JSON file storage in `save.js` with a relational `Users` and `Workspaces` schema using Prisma or Sequelize.</li>
+    <li><strong>Implement Sub-Container Isolation:</strong> Instead of running `g++` directly inside the main backend, spawn ephemeral Docker sub-containers (`docker run --rm --memory=128m codelens-runner`) for ultimate multi-tenant security!</li>
+  </ol>
+
+  <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 13px;">
+    CodeLens Complete Engineering Report · Generated for Project-Based Learning & Technical Documentation · July 2026
+  </div>
+
+</div>
+
+</body>
+</html>
