@@ -980,7 +980,7 @@ function runCurrentCode() {
   if (state.monacoReady && monacoEditor) monacoEditor.updateOptions({ readOnly: true });
 
   const langKey = String(file.monacoLang || file.ext?.replace('.','') || 'python').toLowerCase();
-  const isCompileLang = langKey === 'cpp' || langKey === 'c++' || langKey === 'c';
+  const isCompileLang = langKey === 'cpp' || langKey === 'c++' || langKey === 'c' || langKey === 'java';
   if (isCompileLang) {
     terminalLog('info', 'Compiling...');
   } else {

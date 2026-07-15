@@ -66,7 +66,8 @@ function sanitizeError(rawText, langKey) {
 
   let lines = rawText.split(/\r?\n/);
   const isC = langKey === 'c';
-  const fileName = langKey === 'python' || langKey === 'py' ? 'main.py' : (isC ? 'main.c' : (langKey === 'javascript' || langKey === 'js' ? 'main.js' : 'main.cpp'));
+  const isJava = langKey === 'java';
+  const fileName = langKey === 'python' || langKey === 'py' ? 'main.py' : (isJava ? 'Main.java' : (isC ? 'main.c' : (langKey === 'javascript' || langKey === 'js' ? 'main.js' : 'main.cpp')));
 
   // Filter out internal compiler noise lines
   lines = lines.filter(line => {
@@ -74,7 +75,7 @@ function sanitizeError(rawText, langKey) {
     if (l.includes('mingw') || l.includes('bits/stdc++.h') || l.includes('/usr/include') || l.includes('/usr/lib')) return false;
     if (l.includes('internal headers') || l.includes('in file included from')) return false;
     // Skip unhelpful stack/note lines from compiler noise if not pointing to main file
-    if ((l.includes('note:') || l.includes('here')) && !l.includes('main.')) return false;
+    if ((l.includes('note:') || l.includes('here')) && !l.includes('main.') && !l.includes('Main.java')) return false;
     return true;
   });
 
@@ -82,9 +83,9 @@ function sanitizeError(rawText, langKey) {
 
   // Replace Windows and Unix absolute paths with only the filename
   // E.g., C:\Users\saima\AppData\Local\Temp\codelens_run_xxx\main.cpp:4:5: -> main.cpp:4:5:
-  sanitized = sanitized.replace(/[a-zA-Z]:\\[^\s:*?"<>|]*\\(main\.(?:cpp|c|py|js))/gi, '$1');
-  sanitized = sanitized.replace(/[a-zA-Z]:\/[^\s:*?"<>|]*\/(main\.(?:cpp|c|py|js))/gi, '$1');
-  sanitized = sanitized.replace(/\/[^\s:*?"<>|]*\/(main\.(?:cpp|c|py|js))/gi, '$1');
+  sanitized = sanitized.replace(/[a-zA-Z]:\\[^\s:*?"<>|]*\\(Main\.java|main\.(?:cpp|c|py|js))/gi, '$1');
+  sanitized = sanitized.replace(/[a-zA-Z]:\/[^\s:*?"<>|]*\/(Main\.java|main\.(?:cpp|c|py|js))/gi, '$1');
+  sanitized = sanitized.replace(/\/[^\s:*?"<>|]*\/(Main\.java|main\.(?:cpp|c|py|js))/gi, '$1');
 
   // E.g., File "C:\Users\...\main.py", line 12 -> File "main.py", line 12
   sanitized = sanitized.replace(/File ["'][^"']*main\.(py|cpp|c|js)["']/gi, 'File "main.$1"');
@@ -111,9 +112,51 @@ function processError(rawError, code, isCompile, langKey) {
 
   const isPy = langKey === 'python' || langKey === 'py';
   const isC = langKey === 'c';
-  const fileName = isPy ? 'main.py' : (isC ? 'main.c' : 'main.cpp');
+  const isJava = langKey === 'java';
+  const fileName = isPy ? 'main.py' : (isJava ? 'Main.java' : (isC ? 'main.c' : 'main.cpp'));
 
-  if (!isPy) {
+  if (isJava) {
+    // Java line check: e.g., Main.java:4: error: cannot find symbol
+    const javaRegex = /(?:Main\.java):(\d+):(?:(\d+):)?\s*(?:(?:fatal\s+)?error|warning):\s*(.+)/i;
+    const match = javaRegex.exec(sanitized);
+    if (match) {
+      line = parseInt(match[1], 10);
+      column = match[2] ? parseInt(match[2], 10) : 1;
+      message = match[3].trim();
+      if (line >= 1 && line <= codeLines.length) {
+        codeLine = codeLines[line - 1];
+      }
+      if (message.includes('cannot find symbol')) {
+        suggestion = "Check variable/method names or verify necessary 'import' statements are included.";
+      } else if (message.includes("class Main is public, should be declared in a file named Main.java")) {
+        suggestion = "Ensure your public class is named exactly 'Main'.";
+      } else if (message.includes("expected ';'")) {
+        suggestion = "Did you forget a semicolon ';' at the end of the statement?";
+      } else if (message.includes("expected ')'")) {
+        suggestion = "Check for matching or missing closing parenthesis ')'.";
+      } else if (message.includes("expected '}'")) {
+        suggestion = "Check for matching or missing closing curly brace '}'.";
+      }
+    } else {
+      // Runtime exception check: e.g., Exception in thread "main" java.lang.NullPointerException
+      const exLines = sanitized.split('\n');
+      for (let i = 0; i < exLines.length; i++) {
+        const el = exLines[i].trim();
+        if (el.includes('Exception in thread') || /^[a-zA-Z0-9_.]+Exception/i.test(el) || /^[a-zA-Z0-9_.]+Error/i.test(el)) {
+          message = el;
+          if (el.includes('NullPointerException')) {
+            suggestion = "Check for objects that may be null before invoking methods or accessing fields on them.";
+          } else if (el.includes('ArrayIndexOutOfBoundsException')) {
+            suggestion = "Check loop boundaries and array index access to ensure they are within [0, array.length - 1].";
+          }
+          break;
+        }
+      }
+      if (!message) {
+        message = sanitized.split('\n')[0] || 'Java execution error';
+      }
+    }
+  } else if (!isPy) {
     // C++ / C line check: e.g., main.cpp:4:5: error: 'cout' was not declared in this scope
     const cppRegex = /(?:main\.(?:cpp|c)):(\d+):(?:(\d+):)?\s*(?:(?:fatal\s+)?error|warning):\s*(.+)/i;
     const match = cppRegex.exec(sanitized);
@@ -370,6 +413,85 @@ router.post('/', async (req, res, next) => {
         }
       }
     }
+    // 3 & 6. For Java
+    else if (langKey === 'java') {
+      const codePath = path.join(tmpDir, 'Main.java');
+      await writeFile(codePath, code, 'utf8');
+
+      // Step 1: Compile using javac
+      const compRes = await runCommand('javac', [codePath], { cwd: tmpDir, timeout: 10000 });
+
+      // If compilation fails, return compiler errors exactly like C++
+      if (compRes.err || compRes.stderr) {
+        if (compRes.err && compRes.err.code !== 0) {
+          const rawCompErr = (compRes.stderr || compRes.stdout || compRes.err.message || 'Compilation failed').trim();
+          const proc = processError(rawCompErr, code, true, langKey);
+          compileError = proc.prettyError;
+          structuredInfo = proc.structured;
+          exitCode = typeof compRes.err.code === 'number' ? compRes.err.code : 1;
+        } else if (compRes.stderr && /error:/i.test(compRes.stderr)) {
+          const proc = processError(compRes.stderr.trim(), code, true, langKey);
+          compileError = proc.prettyError;
+          structuredInfo = proc.structured;
+          exitCode = 1;
+        }
+      }
+
+      if (compileError || exitCode !== 0) {
+        await rm(tmpDir, { recursive: true, force: true }).catch(() => {});
+        const execTime = Date.now() - start;
+        return res.json({
+          stdout: '',
+          stderr: compileError,
+          exitCode: exitCode,
+          compileError: compileError,
+          runtimeError: '',
+          executionTime: execTime,
+          errorType: structuredInfo?.errorType || 'compile',
+          line: structuredInfo?.line || null,
+          column: structuredInfo?.column || null,
+          message: structuredInfo?.message || compileError,
+          codeLine: structuredInfo?.codeLine || null,
+          suggestion: structuredInfo?.suggestion || null,
+          "compile errors": compileError,
+          "runtime errors": '',
+          "exit code": exitCode,
+          output: '',
+          error: compileError
+        });
+      }
+
+      // Step 2: Execute using java
+      const runRes = await runCommand('java', ['-cp', tmpDir, 'Main'], {
+        cwd: tmpDir,
+        timeout: EXEC_TIMEOUT_MS,
+        input: stdin || ''
+      });
+
+      stdoutStr = (runRes.stdout || '').trimEnd();
+      stderrStr = (runRes.stderr || '').trimEnd();
+
+      if (runRes.err) {
+        if (runRes.err.killed || runRes.err.signal === 'SIGTERM') {
+          runtimeError = `❌ Runtime Error\n\nExecution timed out (${EXEC_TIMEOUT_MS / 1000}s limit exceeded)`;
+          exitCode = 124;
+          structuredInfo = { errorType: 'runtime', line: null, column: null, message: 'Execution timed out', codeLine: null, suggestion: 'Avoid infinite loops or long blocking calls.' };
+        } else {
+          const rawRunErr = (stderrStr || runRes.stdout || runRes.err.message || 'Runtime error').trim();
+          const proc = processError(rawRunErr, code, false, langKey);
+          runtimeError = proc.prettyError;
+          structuredInfo = proc.structured;
+          exitCode = typeof runRes.err.code === 'number' ? runRes.err.code : 1;
+        }
+      } else {
+        exitCode = 0;
+        if (stderrStr) {
+          const proc = processError(stderrStr, code, false, langKey);
+          runtimeError = proc.prettyError;
+          structuredInfo = proc.structured;
+        }
+      }
+    }
     // For JavaScript / Node.js
     else if (langKey === 'javascript' || langKey === 'js' || langKey === 'node') {
       const codePath = path.join(tmpDir, 'main.js');
@@ -408,7 +530,7 @@ router.post('/', async (req, res, next) => {
     else {
       // Unsupported language
       exitCode = 1;
-      runtimeError = `❌ Runtime Error\n\nUnsupported language: "${language}". Supported languages: C++, Python, C, JavaScript.`;
+      runtimeError = `❌ Runtime Error\n\nUnsupported language: "${language}". Supported languages: C++, Python, C, Java, JavaScript.`;
     }
 
     // 8. Delete all temporary files after execution

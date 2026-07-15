@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log*
+.git
+.gitignore
+.env
+.env.local
+Dockerfile
+.dockerignore
+vercel.json
+README.md
+data
+temp
+tmp
+dist
+build
